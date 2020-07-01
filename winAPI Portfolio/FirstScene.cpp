@@ -16,4 +16,4 @@ void FirstScene::Render(HDC hdc)
 {
 }
 
-// real last test
+// test 1
