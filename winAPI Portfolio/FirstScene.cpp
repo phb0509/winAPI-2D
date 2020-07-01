@@ -16,4 +16,4 @@ void FirstScene::Render(HDC hdc)
 {
 }
 
-// test 2
+// test 3
