@@ -8,13 +8,6 @@ TextureRect::TextureRect(wstring file, int width, int height, COLORREF transColo
 	rect = new Rect(Vector2(0, 0), texture->Size());
 }
 
-TextureRect::TextureRect(wstring file, Gdiplus::Color transColor)
-	: isActive(true)
-{
-	texture = TEX->PlusmapAdd(file, transColor);
-	rect = new Rect(Vector2(0, 0), texture->Size());
-}
-
 TextureRect::~TextureRect()
 {
 	delete rect;

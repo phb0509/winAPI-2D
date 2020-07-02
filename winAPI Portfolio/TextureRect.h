@@ -5,8 +5,7 @@ class TextureRect
 public:
 	TextureRect(wstring file, int width, int height,
 		COLORREF transColor = MAGENTA);
-	TextureRect(wstring file,
-		Gdiplus::Color transColor = Gdiplus::Color::Magenta);
+
 	virtual ~TextureRect();
 
 	void Render();

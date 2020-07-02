@@ -9,14 +9,6 @@ public:
 		L_IDLE,
 		R_WALK,
 		L_WALK,
-		R_RUN,
-		L_RUN,
-		R_JUMPUP,
-		L_JUMPUP,
-		R_JUMPDOWN,
-		L_JUMPDOWN,
-		R_ATTACK,
-		L_ATTACK
 	};
 
 	Eri();
@@ -26,9 +18,7 @@ public:
 	void Render();
 
 	void Move();
-	void Move2();
-	void Jump();
-	void Attack();
+
 
 	void SetIdle();
 
@@ -37,13 +27,29 @@ public:
 	void SetAction(State value);
 
 private:
-	Texture* texture;
-	Rect* rect;
+	Texture* texture; //지울거
 
-	vector<Animation*> actions;
-	Animation* curAction;
+
+
+	Texture* upperBody_texture;
+	Texture* lowerBody_texture;
+
+	Rect* rect; // 지울거
+	Rect* upperBody_rect;
+	Rect* lowerBody_rect;
+	Rect* colliderRect;
+
+
+	vector<Animation*> actions; // 지울거
+	vector<Animation*> upperBody_actions;
+	vector<Animation*> lowerBody_actions;
+
+	Animation* curAction; // 지울거
+	Animation* upperBody_curAction;
+	Animation* lowerBody_curAction;
 
 	State state;
+
 
 
 	double speed;

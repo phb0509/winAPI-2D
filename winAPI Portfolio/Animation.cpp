@@ -7,7 +7,7 @@ Animation::Animation(double frameUpdateSec)
 {
 }
 
-Animation::Animation(Texture* texture, double frameUpdateSec)
+Animation::Animation(Texture* texture, double frameUpdateSec) // default값 0.1
 	: time(0), frameUpdateSec(frameUpdateSec), play(false),
 	loop(false), pingpong(false), EndEvent(nullptr),
 	EndEventInt(nullptr), nextAction(0)
@@ -18,7 +18,7 @@ Animation::Animation(Texture* texture, double frameUpdateSec)
 	{
 		for (int x = 0; x < maxFrame.x; x++)
 		{
-			frames.emplace_back(POINT{ x, y });
+			frames.emplace_back(POINT{ x, y });     // 일차원적으로 인덱스 꺼내쓸수있게 (0,1,2,3....) 해주는곳. 
 		}
 	}
 }
@@ -115,7 +115,7 @@ void Animation::SetPingpong()
 {
 	if (pingpong)
 	{
-		for (int i = action.size() - 2; i >= 0; i--)
+		for (int i = action.size() - 2; i >= 0; i--)    // action : vector<int>
 			action.emplace_back(action[i]);
 	}
 }

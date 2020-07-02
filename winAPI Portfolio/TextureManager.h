@@ -29,10 +29,7 @@ public:
 	Texture* BitmapAdd(wstring path, int width, int height,
 		int frameX, int frameY, COLORREF transColor = MAGENTA);
 
-	Texture* PlusmapAdd(wstring path,
-		Gdiplus::Color transColor = Gdiplus::Color::Magenta);
-	Texture* PlusmapAdd(wstring path, int frameX, int frameY,
-		Gdiplus::Color transColor = Gdiplus::Color::Magenta);
+	
 
 	bool isDebug;
 private:
