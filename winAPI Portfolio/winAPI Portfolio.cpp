@@ -64,7 +64,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	delete program;
 	TextureManager::Delete();
-	FXManager::Delete();
+	//FXManager::Delete();
 
 	return (int)msg.wParam;
 }
@@ -149,7 +149,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	{
 	case WM_CREATE:
 		TextureManager::Create();
-		FXManager::Create();
+		//FXManager::Create();
 		program = new Program(hWnd);
 		break;
 	case WM_COMMAND:
@@ -178,8 +178,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	}
 	break;
 	case WM_MOUSEMOVE:
-		mousePos.x = (double)LOWORD(lParam);
-		mousePos.y = (double)HIWORD(lParam);
 		break;
 	case WM_DESTROY:
 		PostQuitMessage(0);

@@ -13,9 +13,6 @@ public:
 	void Render(Rect* rect) override;
 	void Render(Rect* rect, POINT curFrame) override;
 
-	void AlphaRender(Rect* rect, int alpha) override;
-	void AlphaRender(Rect* rect, POINT curFrame, int alpha) override;
-
 	HDC GetMemDC() { return memDC; }
 private:
 	HDC memDC;
@@ -23,8 +20,6 @@ private:
 
 	COLORREF transColor;
 
-	HDC alphaMemDC;
-	HBITMAP alphaBitmap;
 
 	BLENDFUNCTION blendFunc;
 };

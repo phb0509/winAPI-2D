@@ -22,24 +22,18 @@ Bitmap::~Bitmap()
 {
 	DeleteDC(memDC);
 	DeleteObject(bitmap);
-	DeleteDC(alphaMemDC);
-	DeleteObject(alphaBitmap);
+
 }
 
 void Bitmap::CreateBitmap(wstring file, int width, int height)
 {
 	HDC hdc = GetDC(hWnd);
 	memDC = CreateCompatibleDC(hdc);
-	alphaMemDC = CreateCompatibleDC(hdc);
-	alphaBitmap = CreateCompatibleBitmap(hdc, width, height);
-
 	ReleaseDC(hWnd, hdc);
-
 	bitmap = (HBITMAP)LoadImage(hInst, file.c_str(), IMAGE_BITMAP,
 		width, height, LR_LOADFROMFILE);
 
 	SelectObject(memDC, bitmap);
-	SelectObject(alphaMemDC, alphaBitmap);
 
 	originSize = { width, height };
 }

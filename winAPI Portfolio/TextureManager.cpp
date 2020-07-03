@@ -29,3 +29,13 @@ Texture* TextureManager::BitmapAdd(wstring path, int width, int height, COLORREF
 	return texture;
 }
 
+Texture* TextureManager::BitmapAdd(wstring path, int width, int height, int frameX, int frameY, COLORREF transColor)
+{
+	if (textures.count(path) > 0)
+		return textures[path];
+
+	Texture* texture = new Bitmap(path, width, height, frameX, frameY, transColor);
+	textures[path] = texture;
+
+	return texture;
+}

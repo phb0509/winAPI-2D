@@ -1,56 +1,49 @@
 #include "Framework.h"
 
 Eri::Eri()
-	: state(R_IDLE), speed(300), velocity(0), decelerate(3), accelate(5),
-	jumpPower(0), gravity(980), isJump(false), isRight(true),
-	alpha(0)
+	: state(R_IDLE), speed(150), isRight(true)
 {
 
-	//texture = TEX->BitmapAdd(L"Textures/mario.bmp", 512, 328, 8, 4);
-	upperBody_texture = TEX->BitmapAdd(L"Textures/UpperBody_pack.bmp", 250, 1750, 2, 14);
-	lowerBody_texture = TEX->BitmapAdd(L"Textures/LowerBody_pack.bmp", 850, 50, 1, 17);
 
-	//rect = new Rect({ 100, CENTER_Y }, texture->Size());
-	upperBody_rect = new Rect({ CENTER_X, CENTER_Y }, upperBody_texture->Size());
-	lowerBody_rect = new Rect({ CENTER_X, CENTER_Y + 30 }, lowerBody_texture->Size());
+	upperBody_texture = TEX->BitmapAdd(L"Textures/Eri/UpperBody_pack.bmp", 250, 1750, 2, 14);
+	lowerBody_texture = TEX->BitmapAdd(L"Textures/Eri/LowerBody_pack.bmp", 850, 50, 17, 1);
 
+	upperBody_rect = new Rect({ CENTER_X-150, CENTER_Y + 50 }, upperBody_texture->Size());
+	lowerBody_rect = new Rect({ CENTER_X-150, CENTER_Y + 60 }, lowerBody_texture->Size());
 
 	CreateActions();
 
-	curAction = actions[state]; //vector[enum 정수값] // default값이 IDLE인듯.
-	curAction->Play();
+	upperBody_curAction = upperBody_actions[state];
+	lowerBody_curAction = lowerBody_actions[state];
 
+	upperBody_curAction->Play();
+	lowerBody_curAction->Play();
+
+	collisionBackGround_DC = GM->GetNormalBackGround().collision_texture->GetMemDC();
 	//Texture* expTex = TEX->PlusmapAdd(L"Textures/Effects/Explosion.png", 4, 4);
 	//effect = new FX(expTex);
 }
 
 Eri::~Eri()
 {
-	//delete rect;
 
-	//for (Animation* action : actions)
-	//	delete action;
-
-	//delete effect;
 }
 
 void Eri::Update()
 {
 	Move();
-	//Jump();
-	//Attack();
-
-	//curAction->Update();
-	upperBody_curAction->Update();
 	lowerBody_curAction->Update();
-
+	upperBody_curAction->Update();
 	//effect->Update();
+	//GroundPixelCollision();
 }
 
 void Eri::Render()
 {
-	upperBody_texture->Render(upperBody_rect, upperBody_curAction->GetFrame());
 	lowerBody_texture->Render(lowerBody_rect, lowerBody_curAction->GetFrame());
+	upperBody_texture->Render(upperBody_rect, upperBody_curAction->GetFrame());
+
+
 	//effect->Render();
 }
 
@@ -60,63 +53,22 @@ void Eri::Move()
 
 	if (KEYPRESS(VK_RIGHT))
 	{
-		velocity += accelate * DELTA;
-		if (velocity > 1.0)
-			velocity = 1.0;
+		isRight = true;
+		upperBody_rect->center.x += speed * DELTA;
+		lowerBody_rect->center.x += speed * DELTA;
+		SetAction(R_WALK);
+
 	}
+
 	if (KEYPRESS(VK_LEFT))
 	{
-		velocity -= accelate * DELTA;
-		if (velocity < -1.0)
-			velocity = -1.0;
-	}
-
-	if (velocity < 0)
-	{
 		isRight = false;
-
-		velocity += DELTA * decelerate;
-		if (velocity >= 0)
-		{
-			velocity = 0;
-			if (!isJump)
-				SetAction(L_IDLE);
-		}
-		else
-		{
-			if (!isJump)
-			{
-				if (abs(velocity) > 0.9)
-					SetAction(L_RUN);
-				else
-					SetAction(L_WALK);
-			}
-		}
-	}
-	else if (velocity > 0)
-	{
-		isRight = true;
-
-		velocity -= DELTA * decelerate;
-		if (velocity <= 0)
-		{
-			velocity = 0;
-			if (!isJump)
-				SetAction(R_IDLE);
-		}
-		else
-		{
-			if (!isJump)
-			{
-				if (abs(velocity) > 0.9)
-					SetAction(R_RUN);
-				else
-					SetAction(R_WALK);
-			}
-		}
+		upperBody_rect->center.x -= speed * DELTA;
+		lowerBody_rect->center.x -= speed * DELTA;
+		SetAction(L_WALK);
 	}
 
-	rect->center.x += velocity * speed * DELTA;
+
 }
 
 
@@ -128,15 +80,14 @@ void Eri::SetIdle()
 	else
 		SetAction(L_IDLE);
 
-	isAttack = false;
-
-	Vector2 pos = { rect->center.x, rect->Bottom() };
+	//Vector2 pos = { rect->center.x, rect->Bottom() }; // 이펙트 재생위치
 	//EFFECT->Play("Slash", pos, { 50, 50 });
 }
 
 void Eri::CreateActions()
 {
 	{//R_IDLE
+
 		upperBody_actions.emplace_back(new Animation(upperBody_texture));
 		lowerBody_actions.emplace_back(new Animation(lowerBody_texture));
 
@@ -154,20 +105,20 @@ void Eri::CreateActions()
 
 	{//R_WALK
 		upperBody_actions.emplace_back(new Animation(upperBody_texture));
-		lowerBody_actions.emplace_back(new Animation(lowerBody_texture));
+		lowerBody_actions.emplace_back(new Animation(lowerBody_texture, 0.05));
 
-		upperBody_actions[R_WALK]->SetPart(4, 15, true);
-		lowerBody_actions[R_WALK]->SetPart(1, 16, true);
+		upperBody_actions[R_WALK]->SetPart(4, 15, true, true);
+		lowerBody_actions[R_WALK]->SetPart(5, 16, true);
 	}
 
 	{//L_WALK // L_WALK 팩에 추가 안해서 일단 R_WALK로
 		upperBody_actions.emplace_back(new Animation(upperBody_texture));
-		lowerBody_actions.emplace_back(new Animation(lowerBody_texture));
+		lowerBody_actions.emplace_back(new Animation(lowerBody_texture, 0.05));
 
-		upperBody_actions[L_WALK]->SetPart(4, 15, true);
-		lowerBody_actions[L_WALK]->SetPart(1, 16, true);
+		upperBody_actions[L_WALK]->SetPart(4, 15, true, true);
+		lowerBody_actions[L_WALK]->SetPart(5, 16, true);
 	}
-	
+
 
 
 	//{//R_ATTACK
@@ -187,7 +138,26 @@ void Eri::SetAction(State value)
 	if (state != value)
 	{
 		state = value;
-		curAction = actions[value];
-		curAction->Play();
+		//curAction = actions[value];
+		//curAction->Play();
+
+		upperBody_curAction = upperBody_actions[value];
+		lowerBody_curAction = lowerBody_actions[value];
+		upperBody_curAction->Play();
+		lowerBody_curAction->Play();
+	}
+}
+
+void Eri::GroundPixelCollision()
+{
+	color = GetPixel(collisionBackGround_DC, lowerBody_rect->center.x, lowerBody_rect->center.y + 60);
+	c_color = RGB(240, 0, 174);
+	//COLORREF color = GetPixel(land->GetMemDC(), x, y);
+
+	if (color == c_color)
+	{
+		char buff[100];
+		sprintf_s(buff, " X : %f,  Y: %f \n", lowerBody_rect->center.x, lowerBody_rect->center.y + 60);
+		OutputDebugStringA(buff);
 	}
 }

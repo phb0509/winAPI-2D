@@ -25,10 +25,11 @@
 
 using namespace std;
 
-#define WIN_START_X 0
-#define WIN_START_Y 0
-#define WIN_WIDTH 800
-#define WIN_HEIGHT 600
+
+#define WIN_START_X 200
+#define WIN_START_Y 100
+#define WIN_WIDTH 400
+#define WIN_HEIGHT 400
 #define CENTER_X WIN_WIDTH * 0.5
 #define CENTER_Y WIN_HEIGHT * 0.5
 
@@ -54,6 +55,7 @@ using namespace std;
 //#define SOUND SoundManager::Get()
 #define SCENE SceneManager::Get()
 //#define CAM Camera::Get()
+#define GM GameManager::Get()
 
 //Framework Header
 #include "Point.h"
@@ -85,13 +87,13 @@ using namespace std;
 //Object Header
 #include "TextureRect.h"
 #include "Eri.h"
+#include "GameManager.h"
 
 //Scene Header
 #include "Scene.h"
 #include "SceneManager.h"
 #include "Program.h"
-#include "FirstScene.h"
+#include "NormalStageScene.h"
 
-extern Vector2 mousePos;
 extern HWND hWnd;
 extern HINSTANCE hInst;

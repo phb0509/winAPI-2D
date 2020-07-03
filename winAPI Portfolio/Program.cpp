@@ -26,9 +26,9 @@ Program::Program(HWND hWindow)
 
 	ReleaseDC(hWnd, hdc);
 
-	/*SCENE->Add("start", new AlphaScene());
+	SCENE->Add("start", new NormalStageScene());
 
-	SCENE->ChangeScene("start");*/
+	SCENE->ChangeScene("start");
 }
 
 Program::~Program()
