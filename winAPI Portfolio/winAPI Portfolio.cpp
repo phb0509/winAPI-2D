@@ -1,13 +1,14 @@
 ﻿// winAPI Portfolio.cpp : 애플리케이션에 대한 진입점을 정의합니다.
 //
 
-#include "framework.h"
+#include "Framework.h"
 #include "winAPI Portfolio.h"
 
 #define MAX_LOADSTRING 100
 
 // 전역 변수:
 Program* program;
+Vector2 mousePos;
 
 HINSTANCE hInst;                                // 현재 인스턴스입니다.
 HWND hWnd;                              // 현재 인스턴스입니다.
@@ -107,6 +108,7 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 //        이 함수를 통해 인스턴스 핸들을 전역 변수에 저장하고
 //        주 프로그램 창을 만든 다음 표시합니다.
 //
+
 BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
 	hInst = hInstance; // 인스턴스 핸들을 전역 변수에 저장합니다.
@@ -121,6 +123,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 		nullptr, nullptr, hInstance, nullptr);
 
 	SetMenu(hWnd, nullptr);
+
 
 	if (!hWnd)
 	{
@@ -145,6 +148,10 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+	int a = 0;
+
+
+
 	switch (message)
 	{
 	case WM_CREATE:
@@ -152,6 +159,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		//FXManager::Create();
 		program = new Program(hWnd);
 		break;
+
 	case WM_COMMAND:
 	{
 		int wmId = LOWORD(wParam);
@@ -178,6 +186,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	}
 	break;
 	case WM_MOUSEMOVE:
+		mousePos.x = (double)LOWORD(lParam);
+		mousePos.y = (double)HIWORD(lParam);
 		break;
 	case WM_DESTROY:
 		PostQuitMessage(0);

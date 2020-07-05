@@ -4,7 +4,6 @@ Eri::Eri()
 	: state(R_IDLE), speed(150), isRight(true)
 {
 
-
 	upperBody_texture = TEX->BitmapAdd(L"Textures/Eri/UpperBody_pack.bmp", 250, 1750, 2, 14);
 	lowerBody_texture = TEX->BitmapAdd(L"Textures/Eri/LowerBody_pack.bmp", 850, 50, 17, 1);
 
@@ -19,7 +18,17 @@ Eri::Eri()
 	upperBody_curAction->Play();
 	lowerBody_curAction->Play();
 
-	collisionBackGround_DC = GM->GetNormalBackGround().collision_texture->GetMemDC();
+	//char buff[100];
+	//sprintf_s(buff, "주소값 : %f\n", &collisionBackGround_DC);
+	//OutputDebugStringA(buff);
+
+
+
+	//collisionBackGround_DC = GM->GetNormalBackGround().collision_texture->GetMemDC();
+
+
+
+
 	//Texture* expTex = TEX->PlusmapAdd(L"Textures/Effects/Explosion.png", 4, 4);
 	//effect = new FX(expTex);
 }
@@ -35,7 +44,7 @@ void Eri::Update()
 	lowerBody_curAction->Update();
 	upperBody_curAction->Update();
 	//effect->Update();
-	//GroundPixelCollision();
+	GroundPixelCollision();
 }
 
 void Eri::Render()
@@ -150,14 +159,23 @@ void Eri::SetAction(State value)
 
 void Eri::GroundPixelCollision()
 {
-	color = GetPixel(collisionBackGround_DC, lowerBody_rect->center.x, lowerBody_rect->center.y + 60);
+	color = GetPixel(GM->GetNormalBackGround().collision_texture->GetMemDC(), lowerBody_rect->center.x, lowerBody_rect->center.y - BG_TOP);
+	// 검정색만 출력되는중.
 	c_color = RGB(240, 0, 174);
-	//COLORREF color = GetPixel(land->GetMemDC(), x, y);
+	
+	char buff[100];
+	sprintf_s(buff, "하체 Y좌표 : %f , 테스트Y좌표 : %f \n", lowerBody_rect->center.x, lowerBody_rect->center.Y, lowerBody_rect->center.y - BG_TOP);
+	//sprintf_s(buff, "TOP : %f \n", BG_TOP);
+	OutputDebugStringA(buff);
+
+	HBRUSH brush = CreateSolidBrush(color);
+	SelectObject(GM->GetNormalBackGround().collision_texture->GetMemDC(), brush);
+	Rectangle(GM->GetNormalBackGround().collision_texture->GetMemDC(), 100,100, 200, 200);
 
 	if (color == c_color)
 	{
 		char buff[100];
-		sprintf_s(buff, " X : %f,  Y: %f \n", lowerBody_rect->center.x, lowerBody_rect->center.y + 60);
+		sprintf_s(buff, "뭐라도 좀 떠라떠랃떠라\n");
 		OutputDebugStringA(buff);
 	}
 }

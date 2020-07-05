@@ -14,13 +14,14 @@ GameManager::~GameManager()
 
 void GameManager::Initialize_Object()
 {
-	eri = new Eri();
+
 	normalStage_BackGround = TEX->BitmapAdd(L"Textures/Background/NormalStageBackGround.bmp", 1255, 219);
-	normalStage_BackGround_Rect = new Rect({ CENTER_X+300, CENTER_Y }, normalStage_BackGround->Size());
+	normalStage_BackGround_Rect = new Rect({ CENTER_X+427, CENTER_Y }, normalStage_BackGround->Size());
 
 	normalStage_BackGroundCollision = TEX->BitmapAdd(L"Textures/Background/NormalStageBackGroundCollision.bmp", 1255, 219, RGB(255, 255, 255));
-	normalStage_BackGroundCollision_Rect = new Rect({ CENTER_X + 300, CENTER_Y }, normalStage_BackGroundCollision->Size());
+	normalStage_BackGroundCollision_Rect = new Rect({ CENTER_X + 427 , CENTER_Y }, normalStage_BackGroundCollision->Size());
 
+	eri = new Eri();
 } 
 
 void GameManager::Setting_FirstScene()

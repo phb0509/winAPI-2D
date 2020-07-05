@@ -26,8 +26,9 @@
 using namespace std;
 
 
-#define WIN_START_X 200
-#define WIN_START_Y 100
+#define WIN_START_X 0
+#define WIN_START_Y 0
+
 #define WIN_WIDTH 400
 #define WIN_HEIGHT 400
 #define CENTER_X WIN_WIDTH * 0.5
@@ -41,6 +42,9 @@ using namespace std;
 #define CYAN RGB(0, 255, 255)
 #define WHITE RGB(255, 255, 255)
 #define BLACK RGB(0, 0, 0)
+#define BG_TOP GM->GetNormalBackGround().collision_rect->Top()
+
+
 
 //#define LERP(s, e, t) (s*(1 - t) + e*t)
 #define LERP(s, e, t) (s + (e - s)*t)
@@ -97,3 +101,4 @@ using namespace std;
 
 extern HWND hWnd;
 extern HINSTANCE hInst;
+extern Vector2 mousePos;

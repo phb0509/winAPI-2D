@@ -13,7 +13,8 @@ public:
 	void Render(Rect* rect) override;
 	void Render(Rect* rect, POINT curFrame) override;
 
-	HDC GetMemDC() { return memDC; }
+	HDC GetMemDC() override { return memDC; } 
+
 private:
 	HDC memDC;
 	HBITMAP bitmap;
