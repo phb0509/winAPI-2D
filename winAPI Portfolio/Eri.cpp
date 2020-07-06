@@ -1,11 +1,13 @@
 #include "Framework.h"
 
 Eri::Eri()
-	: state(R_IDLE), speed(150), isRight(true), isGround(true), gravity(980), jumpPower(0), isWalk(false)
+	: state(R_IDLE), speed(100), isRight(true), isGround(true), gravity(980),
+	jumpPower(0), isStand(true), isRightButton(false), isLeftButton(false),
+	des_positionY(0), dir_y(1)
 {
 
 	upperBody_texture = TEX->BitmapAdd(L"Textures/Eri/UpperBody_pack.bmp", 250, 1750, 2, 14);
-	lowerBody_texture = TEX->BitmapAdd(L"Textures/Eri/LowerBody_pack.bmp", 850, 50, 17, 1);
+	lowerBody_texture = TEX->BitmapAdd(L"Textures/Eri/LowerBody_pack.bmp", 1450, 50, 29, 1);
 
 	upperBody_rect = new Rect({ CENTER_X - 150, CENTER_Y + 50 }, upperBody_texture->Size());
 	lowerBody_rect = new Rect({ CENTER_X - 150, CENTER_Y + 60 }, lowerBody_texture->Size());
@@ -30,7 +32,6 @@ Eri::~Eri()
 
 void Eri::Update()
 {
-	GroundPixelCollision();
 	Move();
 	lowerBody_curAction->Update();
 	upperBody_curAction->Update();
@@ -50,48 +51,76 @@ void Eri::Render()
 
 void Eri::Move()
 {
-	Jump();
+	GroundPixelCollision(); // 픽셀충돌되면 isGround = true; 아니면 무조건 떨어짐
+	CheckStand(); // 왼쪽,오른쪽키 둘다 안눌러져있으면 isStand = true; 아니면 false;
+	if (isStand && isGround) { SetAction(R_IDLE); }
 
 	if (KEYPRESS(VK_RIGHT))
 	{
 		isRight = true;
-		isWalk = true;
+		isRightButton = true;
+
 		upperBody_rect->center.x += speed * DELTA;
 		lowerBody_rect->center.x += speed * DELTA;
-		SetAction(R_WALK);
 
+		if (!isJump) 
+		{
+			SetAction(R_WALK);
+		}
 	}
 
 	if (KEYPRESS(VK_LEFT))
 	{
 		isRight = false;
-		isWalk = true;
+		isLeftButton = true;
+
 		upperBody_rect->center.x -= speed * DELTA;
 		lowerBody_rect->center.x -= speed * DELTA;
-		SetAction(L_WALK);
+
+		if (!isJump)
+		{
+			SetAction(L_WALK);
+		}
 	}
 
 
-
-
-	if (KEYUP(VK_RIGHT) && KEYUP(VK_LEFT))
+	if (KEYDOWN(0x53) && !isJump) // 애니메이션만 Set 해주고 실제 좌표이동은 다른곳에서...
+								  // 점프중 아닐때만 키입력 받을 수 있게(이중 점프되면 안되니까)
 	{
-		isWalk = false;
+		des_positionY = lowerBody_rect->center.y + 200;
+		dir_y = -1;
+
+		if (isStand) // 제자리에서 점프했을 때
+		{
+			isJump = true;
+			isGround = false;
+			SetAction(R_STAND_JUMP);
+
+		}
+
+		else if (!isStand) // Walk하면서 점프했을 때
+		{
+			isJump = true;
+			isGround = false;
+			SetAction(R_WALK_JUMP);
+		}
 	}
 
 
+	if (isJump) // 점프를 하고있는 상태, 일정위치까지 y좌표를 -해야하는 상태.
+	{
 
-	//if (KEYPRESS(0x41)) // A키. 공격
-	//{
+		if (lowerBody_rect->center.y == des_positionY) 
+		{ 
+			dir_y = 1; 
+		}
 
-	//}
+		if (isGround) 
+		{
+			isJump = false;
+		};
+	}
 
-
-
-	//if (KEYPRESS(0x43)) // D키. 폭탄
-	//{
-
-	//}
 }
 
 void Eri::GroundPixelCollision()
@@ -102,15 +131,12 @@ void Eri::GroundPixelCollision()
 	if (color == colision_color)
 	{
 		isGround = true;
-		isJump = false;
+		dir_y = 0;
 	}
 
-	else
-	{
-		jumpPower -= gravity * DELTA;
-		upperBody_rect->center.y -= jumpPower * DELTA;
-		lowerBody_rect->center.y -= jumpPower * DELTA;
-	}
+	upperBody_rect->center.y += gravity * DELTA * dir_y;
+	lowerBody_rect->center.y += gravity * DELTA * dir_y;
+	
 }
 
 void Eri::Jump()
@@ -120,6 +146,15 @@ void Eri::Jump()
 		jumpPower = 500;
 		isJump = true;
 	}
+}
+
+void Eri::CheckStand()
+{
+	if (KEYUP(VK_RIGHT)) { isRightButton = false; };
+	if (KEYUP(VK_LEFT)) { isLeftButton = false; }
+
+	if (!isRightButton && !isLeftButton) { isStand = true; }
+	else { isStand = false; }
 }
 
 
@@ -170,6 +205,44 @@ void Eri::CreateActions()
 		lowerBody_actions[L_WALK]->SetPart(5, 16, true);
 	}
 
+	{//R_STAND_JUMP
+		upperBody_actions.emplace_back(new Animation(upperBody_texture));
+		lowerBody_actions.emplace_back(new Animation(lowerBody_texture, 0.05));
+
+		upperBody_actions[R_STAND_JUMP]->SetPart(16, 21, false, true);
+		lowerBody_actions[R_STAND_JUMP]->SetPart(17, 22, false, true);
+	}
+
+	{//L_STAND_JUMP
+		upperBody_actions.emplace_back(new Animation(upperBody_texture));
+		lowerBody_actions.emplace_back(new Animation(lowerBody_texture, 0.05));
+
+		upperBody_actions[L_STAND_JUMP]->SetPart(16, 21, true, true);
+		lowerBody_actions[L_STAND_JUMP]->SetPart(17, 22, false, true);
+	}
+
+	{//R_WALK_JUMP
+		upperBody_actions.emplace_back(new Animation(upperBody_texture));
+		lowerBody_actions.emplace_back(new Animation(lowerBody_texture, 0.05));
+
+		upperBody_actions[R_WALK_JUMP]->SetPart(22, 27, true, true);
+		lowerBody_actions[R_WALK_JUMP]->SetPart(23, 28, true);
+	}
+
+	{//L_WALK_JUMP
+		upperBody_actions.emplace_back(new Animation(upperBody_texture));
+		lowerBody_actions.emplace_back(new Animation(lowerBody_texture, 0.05));
+
+		upperBody_actions[L_WALK_JUMP]->SetPart(22, 27, true, true);
+		lowerBody_actions[L_WALK_JUMP]->SetPart(23, 28, true);
+	}
+
+
+
+
+
+
+
 
 
 	//{//R_ATTACK
@@ -177,6 +250,7 @@ void Eri::CreateActions()
 	//	actions[R_ATTACK]->SetPart(16, 19);
 	//	actions[R_ATTACK]->SetEndEvent(bind(&Eri::SetIdle, this));
 	//}
+
 	//{//L_ATTACK
 	//	actions.emplace_back(new Animation(texture));
 	//	actions[L_ATTACK]->SetPart(20, 23);

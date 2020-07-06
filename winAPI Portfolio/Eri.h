@@ -7,8 +7,15 @@ public:
 	{
 		R_IDLE,
 		L_IDLE,
+
 		R_WALK,
 		L_WALK,
+
+		R_STAND_JUMP,
+		L_STAND_JUMP,
+
+		R_WALK_JUMP,
+		L_WALK_JUMP
 	};
 
 	Eri();
@@ -19,6 +26,7 @@ public:
 
 	void Move();
 	void Jump();
+	void CheckStand();
 
 	void SetIdle();
 
@@ -52,18 +60,21 @@ private:
 
 
 
-
-
-
 	double speed;
 	double gravity;
 	double jumpPower;
+	double des_positionY;
+	double dir_y;
 
 	bool isRight;
 	bool isAttack;
 	bool isGround;
 	bool isJump;
-	bool isWalk;
+
+	bool isRightButton;
+	bool isLeftButton;
+	bool isStand;
+	
 
 	//FX* effect;
 	
