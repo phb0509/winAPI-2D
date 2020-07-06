@@ -1,14 +1,14 @@
 #include "Framework.h"
 
 Eri::Eri()
-	: state(R_IDLE), speed(150), isRight(true)
+	: state(R_IDLE), speed(150), isRight(true), isGround(true), gravity(980), jumpPower(0), isWalk(false)
 {
 
 	upperBody_texture = TEX->BitmapAdd(L"Textures/Eri/UpperBody_pack.bmp", 250, 1750, 2, 14);
 	lowerBody_texture = TEX->BitmapAdd(L"Textures/Eri/LowerBody_pack.bmp", 850, 50, 17, 1);
 
-	upperBody_rect = new Rect({ CENTER_X-150, CENTER_Y + 50 }, upperBody_texture->Size());
-	lowerBody_rect = new Rect({ CENTER_X-150, CENTER_Y + 60 }, lowerBody_texture->Size());
+	upperBody_rect = new Rect({ CENTER_X - 150, CENTER_Y + 50 }, upperBody_texture->Size());
+	lowerBody_rect = new Rect({ CENTER_X - 150, CENTER_Y + 60 }, lowerBody_texture->Size());
 
 	CreateActions();
 
@@ -18,17 +18,7 @@ Eri::Eri()
 	upperBody_curAction->Play();
 	lowerBody_curAction->Play();
 
-	//char buff[100];
-	//sprintf_s(buff, "주소값 : %f\n", &collisionBackGround_DC);
-	//OutputDebugStringA(buff);
-
-
-
-	//collisionBackGround_DC = GM->GetNormalBackGround().collision_texture->GetMemDC();
-
-
-
-
+	//collisionBackGround_DC = GM->GetNormalBackGround().collision_texture->GetMemDC();       // 여기가 문제.
 	//Texture* expTex = TEX->PlusmapAdd(L"Textures/Effects/Explosion.png", 4, 4);
 	//effect = new FX(expTex);
 }
@@ -40,11 +30,12 @@ Eri::~Eri()
 
 void Eri::Update()
 {
+	GroundPixelCollision();
 	Move();
 	lowerBody_curAction->Update();
 	upperBody_curAction->Update();
+
 	//effect->Update();
-	GroundPixelCollision();
 }
 
 void Eri::Render()
@@ -59,10 +50,12 @@ void Eri::Render()
 
 void Eri::Move()
 {
+	Jump();
 
 	if (KEYPRESS(VK_RIGHT))
 	{
 		isRight = true;
+		isWalk = true;
 		upperBody_rect->center.x += speed * DELTA;
 		lowerBody_rect->center.x += speed * DELTA;
 		SetAction(R_WALK);
@@ -72,12 +65,61 @@ void Eri::Move()
 	if (KEYPRESS(VK_LEFT))
 	{
 		isRight = false;
+		isWalk = true;
 		upperBody_rect->center.x -= speed * DELTA;
 		lowerBody_rect->center.x -= speed * DELTA;
 		SetAction(L_WALK);
 	}
 
 
+
+
+	if (KEYUP(VK_RIGHT) && KEYUP(VK_LEFT))
+	{
+		isWalk = false;
+	}
+
+
+
+	//if (KEYPRESS(0x41)) // A키. 공격
+	//{
+
+	//}
+
+
+
+	//if (KEYPRESS(0x43)) // D키. 폭탄
+	//{
+
+	//}
+}
+
+void Eri::GroundPixelCollision()
+{
+	color = GetPixel(GM->GetNormalBackGround().collision_texture->GetMemDC(), lowerBody_rect->center.x, lowerBody_rect->center.y - BG_TOP + 26);
+	colision_color = RGB(240, 0, 174);
+
+	if (color == colision_color)
+	{
+		isGround = true;
+		isJump = false;
+	}
+
+	else
+	{
+		jumpPower -= gravity * DELTA;
+		upperBody_rect->center.y -= jumpPower * DELTA;
+		lowerBody_rect->center.y -= jumpPower * DELTA;
+	}
+}
+
+void Eri::Jump()
+{
+	if (!isJump && KEYDOWN(0x53))
+	{
+		jumpPower = 500;
+		isJump = true;
+	}
 }
 
 
@@ -157,25 +199,3 @@ void Eri::SetAction(State value)
 	}
 }
 
-void Eri::GroundPixelCollision()
-{
-	color = GetPixel(GM->GetNormalBackGround().collision_texture->GetMemDC(), lowerBody_rect->center.x, lowerBody_rect->center.y - BG_TOP);
-	// 검정색만 출력되는중.
-	c_color = RGB(240, 0, 174);
-	
-	char buff[100];
-	sprintf_s(buff, "하체 Y좌표 : %f , 테스트Y좌표 : %f \n", lowerBody_rect->center.x, lowerBody_rect->center.Y, lowerBody_rect->center.y - BG_TOP);
-	//sprintf_s(buff, "TOP : %f \n", BG_TOP);
-	OutputDebugStringA(buff);
-
-	HBRUSH brush = CreateSolidBrush(color);
-	SelectObject(GM->GetNormalBackGround().collision_texture->GetMemDC(), brush);
-	Rectangle(GM->GetNormalBackGround().collision_texture->GetMemDC(), 100,100, 200, 200);
-
-	if (color == c_color)
-	{
-		char buff[100];
-		sprintf_s(buff, "뭐라도 좀 떠라떠랃떠라\n");
-		OutputDebugStringA(buff);
-	}
-}

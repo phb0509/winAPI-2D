@@ -18,6 +18,7 @@ public:
 	void Render();
 
 	void Move();
+	void Jump();
 
 	void SetIdle();
 
@@ -46,7 +47,7 @@ private:
 
 
 	COLORREF color;
-	COLORREF c_color;
+	COLORREF colision_color;
 	HDC collisionBackGround_DC;
 
 
@@ -55,8 +56,14 @@ private:
 
 
 	double speed;
+	double gravity;
+	double jumpPower;
+
 	bool isRight;
 	bool isAttack;
+	bool isGround;
+	bool isJump;
+	bool isWalk;
 
 	//FX* effect;
 	
