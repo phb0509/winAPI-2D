@@ -2,15 +2,14 @@
 
 Eri::Eri()
 	: state(R_IDLE), speed(100), isRight(true), isGround(true), gravity(980),
-	jumpPower(0), isStand(true), isRightButton(false), isLeftButton(false),
-	des_positionY(0), dir_y(1)
+	jumpPower(0), isStand(true), isRightButton(false), isLeftButton(false), isAttack(false)
 {
 
-	upperBody_texture = TEX->BitmapAdd(L"Textures/Eri/UpperBody_pack.bmp", 250, 1750, 2, 14);
+	upperBody_texture = TEX->BitmapAdd(L"Textures/Eri/UpperBody_pack.bmp", 500, 1250, 4, 10);
 	lowerBody_texture = TEX->BitmapAdd(L"Textures/Eri/LowerBody_pack.bmp", 1450, 50, 29, 1);
 
-	upperBody_rect = new Rect({ CENTER_X - 150, CENTER_Y + 50 }, upperBody_texture->Size());
-	lowerBody_rect = new Rect({ CENTER_X - 150, CENTER_Y + 60 }, lowerBody_texture->Size());
+	upperBody_rect = new Rect({ CENTER_X - 150, CENTER_Y + 40 }, upperBody_texture->Size());
+	lowerBody_rect = new Rect({ CENTER_X - 150, CENTER_Y + 50 }, lowerBody_texture->Size());
 
 	CreateActions();
 
@@ -19,6 +18,7 @@ Eri::Eri()
 
 	upperBody_curAction->Play();
 	lowerBody_curAction->Play();
+
 
 	//collisionBackGround_DC = GM->GetNormalBackGround().collision_texture->GetMemDC();       // 여기가 문제.
 	//Texture* expTex = TEX->PlusmapAdd(L"Textures/Effects/Explosion.png", 4, 4);
@@ -36,6 +36,7 @@ void Eri::Update()
 	lowerBody_curAction->Update();
 	upperBody_curAction->Update();
 
+
 	//effect->Update();
 }
 
@@ -43,7 +44,6 @@ void Eri::Render()
 {
 	lowerBody_texture->Render(lowerBody_rect, lowerBody_curAction->GetFrame());
 	upperBody_texture->Render(upperBody_rect, upperBody_curAction->GetFrame());
-
 
 	//effect->Render();
 }
@@ -53,7 +53,23 @@ void Eri::Move()
 {
 	GroundPixelCollision(); // 픽셀충돌되면 isGround = true; 아니면 무조건 떨어짐
 	CheckStand(); // 왼쪽,오른쪽키 둘다 안눌러져있으면 isStand = true; 아니면 false;
-	if (isStand && isGround) { SetAction(R_IDLE); }
+
+	if (isStand && isGround)
+	{
+		if (isRight)SetAction(R_IDLE);
+		else  SetAction(L_IDLE);
+	}
+
+	if (KEYPRESS(0x41)) // 공격키 누르면
+	{
+		if (isStand && isGround)
+		{
+			if (isRight)SetAction(R_STAND_ATTACK);
+			else  SetAction(L_STAND_ATTACK);
+		}
+	}
+
+
 
 	if (KEYPRESS(VK_RIGHT))
 	{
@@ -63,7 +79,7 @@ void Eri::Move()
 		upperBody_rect->center.x += speed * DELTA;
 		lowerBody_rect->center.x += speed * DELTA;
 
-		if (!isJump) 
+		if (!isJump)
 		{
 			SetAction(R_WALK);
 		}
@@ -83,18 +99,23 @@ void Eri::Move()
 		}
 	}
 
+	Jump();
+}
 
+void Eri::Jump()
+{
 	if (KEYDOWN(0x53) && !isJump) // 애니메이션만 Set 해주고 실제 좌표이동은 다른곳에서...
 								  // 점프중 아닐때만 키입력 받을 수 있게(이중 점프되면 안되니까)
 	{
-		des_positionY = lowerBody_rect->center.y + 200;
-		dir_y = -1;
+		jumpPower = 400;
 
 		if (isStand) // 제자리에서 점프했을 때
 		{
 			isJump = true;
 			isGround = false;
-			SetAction(R_STAND_JUMP);
+
+			if (isRight)SetAction(R_STAND_JUMP);
+			else SetAction(L_STAND_JUMP);
 
 		}
 
@@ -102,50 +123,43 @@ void Eri::Move()
 		{
 			isJump = true;
 			isGround = false;
-			SetAction(R_WALK_JUMP);
+			if (isRight)SetAction(R_WALK_JUMP);
+			else SetAction(L_WALK_JUMP);
 		}
 	}
 
 
-	if (isJump) // 점프를 하고있는 상태, 일정위치까지 y좌표를 -해야하는 상태.
+	if (isJump) // 점프를 하고있는 상태
 	{
-
-		if (lowerBody_rect->center.y == des_positionY) 
-		{ 
-			dir_y = 1; 
-		}
-
-		if (isGround) 
+		if (isGround)
 		{
 			isJump = false;
 		};
 	}
-
 }
 
 void Eri::GroundPixelCollision()
 {
+	jumpPower -= gravity * DELTA;
+	upperBody_rect->center.y -= jumpPower * DELTA;
+	lowerBody_rect->center.y -= jumpPower * DELTA;
+
 	color = GetPixel(GM->GetNormalBackGround().collision_texture->GetMemDC(), lowerBody_rect->center.x, lowerBody_rect->center.y - BG_TOP + 26);
 	colision_color = RGB(240, 0, 174);
 
 	if (color == colision_color)
 	{
 		isGround = true;
-		dir_y = 0;
+		jumpPower = 0;
+		gravity = 0;
 	}
-
-	upperBody_rect->center.y += gravity * DELTA * dir_y;
-	lowerBody_rect->center.y += gravity * DELTA * dir_y;
-	
-}
-
-void Eri::Jump()
-{
-	if (!isJump && KEYDOWN(0x53))
+	else
 	{
-		jumpPower = 500;
-		isJump = true;
+		gravity = 980;
 	}
+
+
+
 }
 
 void Eri::CheckStand()
@@ -159,16 +173,11 @@ void Eri::CheckStand()
 
 
 
-void Eri::SetIdle()
-{
-	if (isRight)
-		SetAction(R_IDLE);
-	else
-		SetAction(L_IDLE);
 
-	//Vector2 pos = { rect->center.x, rect->Bottom() }; // 이펙트 재생위치
-	//EFFECT->Play("Slash", pos, { 50, 50 });
-}
+
+
+
+
 
 void Eri::CreateActions()
 {
@@ -223,23 +232,36 @@ void Eri::CreateActions()
 
 	{//R_WALK_JUMP
 		upperBody_actions.emplace_back(new Animation(upperBody_texture));
-		lowerBody_actions.emplace_back(new Animation(lowerBody_texture, 0.05));
+		lowerBody_actions.emplace_back(new Animation(lowerBody_texture,0.2));
 
-		upperBody_actions[R_WALK_JUMP]->SetPart(22, 27, true, true);
-		lowerBody_actions[R_WALK_JUMP]->SetPart(23, 28, true);
+		upperBody_actions[R_WALK_JUMP]->SetPart(22, 27);
+		lowerBody_actions[R_WALK_JUMP]->SetPart(23, 28);
 	}
 
 	{//L_WALK_JUMP
 		upperBody_actions.emplace_back(new Animation(upperBody_texture));
-		lowerBody_actions.emplace_back(new Animation(lowerBody_texture, 0.05));
+		lowerBody_actions.emplace_back(new Animation(lowerBody_texture,0.2));
 
-		upperBody_actions[L_WALK_JUMP]->SetPart(22, 27, true, true);
-		lowerBody_actions[L_WALK_JUMP]->SetPart(23, 28, true);
+		upperBody_actions[L_WALK_JUMP]->SetPart(22, 27);
+		lowerBody_actions[L_WALK_JUMP]->SetPart(23, 28);
 	}
 
 
+	{//R_STAND_ATTACK
+		upperBody_actions.emplace_back(new Animation(upperBody_texture));
+		lowerBody_actions.emplace_back(new Animation(lowerBody_texture));
 
+		upperBody_actions[R_STAND_ATTACK]->SetPart(28, 37);
+		lowerBody_actions[R_STAND_ATTACK]->SetPart(0, 0);
+	}
 
+	{//L_STAND_ATTACK
+		upperBody_actions.emplace_back(new Animation(upperBody_texture));
+		lowerBody_actions.emplace_back(new Animation(lowerBody_texture));
+
+		upperBody_actions[L_STAND_ATTACK]->SetPart(28, 37);
+		lowerBody_actions[L_STAND_ATTACK]->SetPart(0, 0);
+	}
 
 
 
@@ -257,6 +279,23 @@ void Eri::CreateActions()
 	//	actions[L_ATTACK]->SetEndEvent(bind(&Eri::SetIdle, this));
 	//}
 }
+
+void Eri::SetIdle()
+{
+	if (isRight)
+		SetAction(R_IDLE);
+	else
+		SetAction(L_IDLE);
+
+	//Vector2 pos = { rect->center.x, rect->Bottom() }; // 이펙트 재생위치
+	//EFFECT->Play("Slash", pos, { 50, 50 });
+}
+
+
+
+
+
+
 
 void Eri::SetAction(State value)
 {

@@ -15,7 +15,14 @@ public:
 		L_STAND_JUMP,
 
 		R_WALK_JUMP,
-		L_WALK_JUMP
+		L_WALK_JUMP,
+
+		R_STAND_ATTACK,
+		L_STAND_ATTACK,
+
+		R_WALK_ATTACK,
+		L_WALK_ATTACK
+
 	};
 
 	Eri();
@@ -24,9 +31,10 @@ public:
 	void Update();
 	void Render();
 
+	void CheckStand();
 	void Move();
 	void Jump();
-	void CheckStand();
+	
 
 	void SetIdle();
 
@@ -63,8 +71,6 @@ private:
 	double speed;
 	double gravity;
 	double jumpPower;
-	double des_positionY;
-	double dir_y;
 
 	bool isRight;
 	bool isAttack;
@@ -74,6 +80,8 @@ private:
 	bool isRightButton;
 	bool isLeftButton;
 	bool isStand;
+
+	int a = 0;
 	
 
 	//FX* effect;

@@ -144,6 +144,7 @@
     <ClInclude Include="Animation.h" />
     <ClInclude Include="Bitmap.h" />
     <ClInclude Include="Circle.h" />
+    <ClInclude Include="DefaultGunBullet.h" />
     <ClInclude Include="Eri.h" />
     <ClInclude Include="NormalStageScene.h" />
     <ClInclude Include="Framework.h" />
@@ -170,6 +171,7 @@
     <ClCompile Include="Animation.cpp" />
     <ClCompile Include="Bitmap.cpp" />
     <ClCompile Include="Circle.cpp" />
+    <ClCompile Include="DefaultGunBullet.cpp" />
     <ClCompile Include="Eri.cpp" />
     <ClCompile Include="NormalStageScene.cpp" />
     <ClCompile Include="Framework.cpp">

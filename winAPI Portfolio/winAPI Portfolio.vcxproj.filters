@@ -34,6 +34,9 @@
     <Filter Include="Framework\Object">
       <UniqueIdentifier>{48ef473f-f630-4d5f-8a72-ec6363b9f9c1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameObject\Eri">
+      <UniqueIdentifier>{ff85f9e5-7334-4b7d-b1e0-16706e0c17d8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -87,9 +90,6 @@
     <ClInclude Include="Vector2.h">
       <Filter>Framework\Object</Filter>
     </ClInclude>
-    <ClInclude Include="Eri.h">
-      <Filter>GameObject</Filter>
-    </ClInclude>
     <ClInclude Include="Math.h">
       <Filter>Framework\Utility</Filter>
     </ClInclude>
@@ -108,6 +108,12 @@
     <ClInclude Include="NormalStageScene.h">
       <Filter>Scene</Filter>
     </ClInclude>
+    <ClInclude Include="Eri.h">
+      <Filter>GameObject\Eri</Filter>
+    </ClInclude>
+    <ClInclude Include="DefaultGunBullet.h">
+      <Filter>GameObject\Eri</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="winAPI Portfolio.cpp">
@@ -118,9 +124,6 @@
     </ClCompile>
     <ClCompile Include="Program.cpp">
       <Filter>Program</Filter>
-    </ClCompile>
-    <ClCompile Include="Eri.cpp">
-      <Filter>GameObject</Filter>
     </ClCompile>
     <ClCompile Include="Timer.cpp">
       <Filter>Framework\Utility</Filter>
@@ -169,6 +172,12 @@
     </ClCompile>
     <ClCompile Include="NormalStageScene.cpp">
       <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Eri.cpp">
+      <Filter>GameObject\Eri</Filter>
+    </ClCompile>
+    <ClCompile Include="DefaultGunBullet.cpp">
+      <Filter>GameObject\Eri</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

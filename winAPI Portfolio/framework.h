@@ -78,18 +78,19 @@ using namespace std;
 #include "Bitmap.h"
 #include "TextureManager.h"
 #include "Animation.h"
-
+#include "TextureRect.h"
 
 //#include "SoundManager.h"
 //#include "ImageFont.h"
 //#include "FX.h"
 //#include "FXManager.h"
-//
 //#include "Camera.h"
 
 
 //Object Header
-#include "TextureRect.h"
+
+
+#include "DefaultGunBullet.h"
 #include "Eri.h"
 #include "GameManager.h"
 
