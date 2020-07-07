@@ -143,6 +143,7 @@
   <ItemGroup>
     <ClInclude Include="Animation.h" />
     <ClInclude Include="Bitmap.h" />
+    <ClInclude Include="Bullet.h" />
     <ClInclude Include="Circle.h" />
     <ClInclude Include="DefaultGunBullet.h" />
     <ClInclude Include="Eri.h" />

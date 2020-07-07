@@ -17,5 +17,7 @@ private:
 
 	Texture* collision_bg;
 	Rect* collision_bg_rect;
+
+	vector<Bullet*> tmp_bulletPool;
 };
 

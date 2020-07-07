@@ -89,7 +89,7 @@ using namespace std;
 
 //Object Header
 
-
+#include "Bullet.h"
 #include "DefaultGunBullet.h"
 #include "Eri.h"
 #include "GameManager.h"

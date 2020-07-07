@@ -37,6 +37,9 @@
     <Filter Include="GameObject\Eri">
       <UniqueIdentifier>{ff85f9e5-7334-4b7d-b1e0-16706e0c17d8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameObject\Eri\Bullet">
+      <UniqueIdentifier>{3741850e-5a32-41aa-a788-83572d78ba02}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -112,7 +115,10 @@
       <Filter>GameObject\Eri</Filter>
     </ClInclude>
     <ClInclude Include="DefaultGunBullet.h">
-      <Filter>GameObject\Eri</Filter>
+      <Filter>GameObject\Eri\Bullet</Filter>
+    </ClInclude>
+    <ClInclude Include="Bullet.h">
+      <Filter>GameObject\Eri\Bullet</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -177,7 +183,7 @@
       <Filter>GameObject\Eri</Filter>
     </ClCompile>
     <ClCompile Include="DefaultGunBullet.cpp">
-      <Filter>GameObject\Eri</Filter>
+      <Filter>GameObject\Eri\Bullet</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

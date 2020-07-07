@@ -2,10 +2,21 @@
 
 DefaultGunBullet::DefaultGunBullet()
 {
-	bullet = TEX->BitmapAdd(L"Textures/Effects/DefaultGun_Bullet.bmp", 10,6);
-	bullet_rect = new Rect({ -10,-10 }, bullet->Size());
+	bullet_texture = TEX->BitmapAdd(L"Textures/Effects/DefaultGun_Bullet.bmp", 10,6);
+	bullet_rect = new Rect({ -10,-10 }, bullet_texture->Size());
 }
 
 DefaultGunBullet::~DefaultGunBullet()
 {
+	delete bullet_rect;
+}
+
+void DefaultGunBullet::Update()
+{
+	bullet_rect->center.x += 0.3;
+}
+
+void DefaultGunBullet::Render()
+{
+	bullet_texture->Render(bullet_rect);
 }

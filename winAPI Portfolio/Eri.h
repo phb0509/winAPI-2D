@@ -34,16 +34,14 @@ public:
 	void CheckStand();
 	void Move();
 	void Jump();
-	
-
 	void SetIdle();
-
 	void CreateActions();
-
 	void SetAction(State value);
-
 	void GroundPixelCollision();
 
+	void Fire(string curWeapon);
+	void ChangeWeapon(string weapon) { curWeapon = weapon; }; 
+	string GetCurWeapon() { return curWeapon; }
 private:
 
 	Texture* upperBody_texture;
@@ -59,13 +57,9 @@ private:
 	Animation* upperBody_curAction;
 	Animation* lowerBody_curAction;
 
-	
-
-
 	COLORREF color;
 	COLORREF colision_color;
 	HDC collisionBackGround_DC;
-
 
 
 	double speed;
@@ -81,7 +75,8 @@ private:
 	bool isLeftButton;
 	bool isStand;
 
-	int a = 0;
+	string curWeapon;
+	vector<Bullet*> tmp_bulletPool;
 	
 
 	//FX* effect;

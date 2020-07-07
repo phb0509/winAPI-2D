@@ -2,6 +2,8 @@
 
 struct TextureObject
 {
+
+public:
 	Texture* texture;
 	Texture* collision_texture;
 	Rect* rect;
@@ -22,11 +24,13 @@ public:
 	}
 
 	void Initialize_Object();  // 
+	void Initialize_Bullet();
 	void Setting_FirstScene(); // 에리,플레이어 위치 설정.
 
 	Eri* GetEri() { return eri; }
-	//Texture* GetNormalBackground(){ return normalStage_BackGround; }
 	TextureObject GetNormalBackGround();
+	vector<Bullet*> GetBulletPool(string weaponName) { return bullet_pool[weaponName]; }
+
 
 private:
 	Eri* eri;
@@ -37,9 +41,10 @@ private:
 	Texture* normalStage_BackGroundCollision;
 	Rect* normalStage_BackGroundCollision_Rect;
 
-
-
 	TextureObject texture_Object;
+
+	Bullet* bullet;
+	map<string, vector<Bullet*> > bullet_pool;
 	//Soldier* soldier;
 };
 
