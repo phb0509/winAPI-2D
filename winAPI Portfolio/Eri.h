@@ -35,6 +35,7 @@ public:
 	void Move();
 	void Jump();
 	void SetIdle();
+	void SetAttackIdle();
 	void CreateActions();
 	void SetAction(State value);
 	void GroundPixelCollision();
@@ -42,6 +43,7 @@ public:
 	void Fire(string curWeapon);
 	void ChangeWeapon(string weapon) { curWeapon = weapon; }; 
 	string GetCurWeapon() { return curWeapon; }
+
 private:
 
 	Texture* upperBody_texture;

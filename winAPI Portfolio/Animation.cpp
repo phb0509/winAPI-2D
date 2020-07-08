@@ -45,6 +45,7 @@ void Animation::Update()
 			{
 				curPlayNum = 0;
 			}
+
 			else
 			{
 				curPlayNum--;

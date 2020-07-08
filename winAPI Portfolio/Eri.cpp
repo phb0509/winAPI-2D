@@ -40,7 +40,7 @@ Eri::~Eri()
 void Eri::Update()
 {
 	Move();
-	lowerBody_curAction->Update();
+	lowerBody_curAction->Update(); // 애니메이션 클레스의 업데이트 실행
 	upperBody_curAction->Update();
 
 
@@ -61,45 +61,28 @@ void Eri::Move()
 	GroundPixelCollision();
 	CheckStand();
 
-	if (KEYDOWN(0x41)) // 공격키 누르면
-	{
-		isAttack = true;
-		Fire(curWeapon);
-	}
-
-
 	if (isStand && isGround)
 	{
 		if (isRight)
 		{
-			if (isAttack) // 
+			if (KEYDOWN(0x41)) // 공격키 누르면
 			{
 				SetAction(R_STAND_ATTACK);
-
-			}
-			else // else if(R_STAND_ATTACK 프레임이 끝까지 갔다면)
-			{
-				SetAction(R_IDLE);
+				Fire(curWeapon);
 			}
 		}
+
 		else
 		{
-			if (isAttack)
+			if (KEYDOWN(0x41)) // 공격키 누르면
 			{
 				SetAction(L_STAND_ATTACK);
-			}
-			else
-			{
-				SetAction(L_IDLE);
+				Fire(curWeapon);
 			}
 		}
 	}
 
 
-	if (KEYUP(0x41))
-	{
-		isAttack = false;
-	}
 
 
 	if (KEYPRESS(VK_RIGHT))
@@ -114,6 +97,7 @@ void Eri::Move()
 		{
 			SetAction(R_WALK);
 		}
+
 	}
 
 	if (KEYPRESS(VK_LEFT))
@@ -129,6 +113,21 @@ void Eri::Move()
 			SetAction(L_WALK);
 		}
 	}
+
+	if (KEYUP(VK_RIGHT))
+	{
+		if (isGround)
+			SetAction(R_IDLE);
+	}
+
+	if (KEYUP(VK_LEFT))
+	{
+		if (isGround)
+			SetAction(L_IDLE);
+	}
+
+
+
 
 	Jump();
 }
@@ -164,6 +163,14 @@ void Eri::Jump()
 		if (isGround)
 		{
 			isJump = false;
+			if (isRight)
+			{
+				SetAction(R_IDLE);
+			}
+			else
+			{
+				SetAction(L_IDLE);
+			}
 		};
 	}
 }
@@ -266,6 +273,7 @@ void Eri::CreateActions()
 		upperBody_actions.emplace_back(new Animation(upperBody_texture));
 		lowerBody_actions.emplace_back(new Animation(lowerBody_texture, 0.05));
 
+
 		upperBody_actions[L_STAND_JUMP]->SetPart(16, 21, true, true);
 		lowerBody_actions[L_STAND_JUMP]->SetPart(17, 22, false, true);
 	}
@@ -288,21 +296,19 @@ void Eri::CreateActions()
 
 
 	{//R_STAND_ATTACK
-		upperBody_actions.emplace_back(new Animation(upperBody_texture, 0.02));
+		upperBody_actions.emplace_back(new Animation(upperBody_texture, 0.03));
 		lowerBody_actions.emplace_back(new Animation(lowerBody_texture));
 
 		upperBody_actions[R_STAND_ATTACK]->SetPart(28, 37);
-		//upperBody_actions[R_STAND_ATTACK]->SetEndEvent(bind(&Eri::SetIdle, this));
 		lowerBody_actions[R_STAND_ATTACK]->SetPart(0, 0);
 
 	}
 
 	{//L_STAND_ATTACK
-		upperBody_actions.emplace_back(new Animation(upperBody_texture, 0.02));
+		upperBody_actions.emplace_back(new Animation(upperBody_texture, 0.03));
 		lowerBody_actions.emplace_back(new Animation(lowerBody_texture));
 
 		upperBody_actions[L_STAND_ATTACK]->SetPart(28, 37);
-		//upperBody_actions[L_STAND_ATTACK]->SetEndEvent(bind(&Eri::SetIdle, this));
 		lowerBody_actions[L_STAND_ATTACK]->SetPart(0, 0);
 	}
 }
@@ -318,15 +324,48 @@ void Eri::SetIdle()
 	//EFFECT->Play("Slash", pos, { 50, 50 });
 }
 
+void Eri::SetAttackIdle()
+{
+	if (isRight)
+	{
+		isAttack = false;
+		SetAction(R_IDLE);
+	}
+	else
+	{
+		isAttack = false;
+		SetAction(L_IDLE);
+	}
+
+	//Vector2 pos = { rect->center.x, rect->Bottom() }; // 이펙트 재생위치
+	//EFFECT->Play("Slash", pos, { 50, 50 });
+}
+
+
+
+
+
 void Eri::SetAction(State value)
 {
-	if (state != value)
+	if ((value == R_STAND_ATTACK) || (value == L_STAND_ATTACK)) // value를 정수값으로바꿔서 범위안에 있으면 ATTACK관련 state로 판별해서 if문 안에 들어가게하기.
 	{
 		state = value;
 		upperBody_curAction = upperBody_actions[value];
 		lowerBody_curAction = lowerBody_actions[value];
 		upperBody_curAction->Play();
 		lowerBody_curAction->Play();
+	}
+
+	else
+	{
+		if (state != value)
+		{
+			state = value;
+			upperBody_curAction = upperBody_actions[value];
+			lowerBody_curAction = lowerBody_actions[value];
+			upperBody_curAction->Play();
+			lowerBody_curAction->Play();
+		}
 	}
 }
 
