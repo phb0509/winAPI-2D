@@ -28,7 +28,7 @@ void GameManager::Initialize_Object()
 
 void GameManager::Initialize_Bullet()
 {
-	for (int i = 0; i < 100; i++) // ±âº»ÃÑ¾Ë 50°³
+	for (int i = 0; i < 200; i++) // ±âº»ÃÑ¾Ë 50°³
 	{
 		bullet = new DefaultGunBullet();
 		bullet_pool["DefaultGunBullet"].push_back(bullet);

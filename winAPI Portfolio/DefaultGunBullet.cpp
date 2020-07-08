@@ -13,7 +13,7 @@ DefaultGunBullet::~DefaultGunBullet()
 
 void DefaultGunBullet::Update()
 {
-	bullet_rect->center.x += 0.3;
+	bullet_rect->center.x += 500 * DELTA;
 }
 
 void DefaultGunBullet::Render()

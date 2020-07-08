@@ -2,7 +2,7 @@
 
 Eri::Eri()
 	: state(R_IDLE), speed(100), isRight(true), isGround(true), gravity(980),
-	jumpPower(0), isStand(true), isRightButton(false), isLeftButton(false), isAttack(false),curWeapon("DefaultGunBullet")
+	jumpPower(0), isStand(true), isRightButton(false), isLeftButton(false), isAttack(false), curWeapon("DefaultGunBullet")
 {
 
 	upperBody_texture = TEX->BitmapAdd(L"Textures/Eri/UpperBody_pack.bmp", 500, 1250, 4, 10);
@@ -61,22 +61,46 @@ void Eri::Move()
 	GroundPixelCollision();
 	CheckStand();
 
-	if (isStand && isGround)
-	{
-		if (isRight)SetAction(R_IDLE);
-		else  SetAction(L_IDLE);
-	}
-
 	if (KEYDOWN(0x41)) // 공격키 누르면
 	{
+		isAttack = true;
 		Fire(curWeapon);
-		/*if (isStand && isGround)
-		{
-			if (isRight)SetAction(R_STAND_ATTACK);
-			else  SetAction(L_STAND_ATTACK);
-		}*/
-
 	}
+
+
+	if (isStand && isGround)
+	{
+		if (isRight)
+		{
+			if (isAttack) // 
+			{
+				SetAction(R_STAND_ATTACK);
+
+			}
+			else // else if(R_STAND_ATTACK 프레임이 끝까지 갔다면)
+			{
+				SetAction(R_IDLE);
+			}
+		}
+		else
+		{
+			if (isAttack)
+			{
+				SetAction(L_STAND_ATTACK);
+			}
+			else
+			{
+				SetAction(L_IDLE);
+			}
+		}
+	}
+
+
+	if (KEYUP(0x41))
+	{
+		isAttack = false;
+	}
+
 
 	if (KEYPRESS(VK_RIGHT))
 	{
@@ -175,7 +199,7 @@ void Eri::Fire(string curWeapon)
 		if (tmp_bulletPool[i]->GetActive())
 		{
 			tmp_bulletPool[i]->SetActive(false);
-			tmp_bulletPool[i]->SetBulletPosition(Vector2(upperBody_rect->center.x+25, upperBody_rect->center.y+5));
+			tmp_bulletPool[i]->SetBulletPosition(Vector2(upperBody_rect->center.x + 25, upperBody_rect->center.y));
 			break;
 		}
 	}
@@ -264,36 +288,23 @@ void Eri::CreateActions()
 
 
 	{//R_STAND_ATTACK
-		upperBody_actions.emplace_back(new Animation(upperBody_texture));
+		upperBody_actions.emplace_back(new Animation(upperBody_texture, 0.02));
 		lowerBody_actions.emplace_back(new Animation(lowerBody_texture));
 
 		upperBody_actions[R_STAND_ATTACK]->SetPart(28, 37);
+		//upperBody_actions[R_STAND_ATTACK]->SetEndEvent(bind(&Eri::SetIdle, this));
 		lowerBody_actions[R_STAND_ATTACK]->SetPart(0, 0);
+
 	}
 
 	{//L_STAND_ATTACK
-		upperBody_actions.emplace_back(new Animation(upperBody_texture));
+		upperBody_actions.emplace_back(new Animation(upperBody_texture, 0.02));
 		lowerBody_actions.emplace_back(new Animation(lowerBody_texture));
 
 		upperBody_actions[L_STAND_ATTACK]->SetPart(28, 37);
+		//upperBody_actions[L_STAND_ATTACK]->SetEndEvent(bind(&Eri::SetIdle, this));
 		lowerBody_actions[L_STAND_ATTACK]->SetPart(0, 0);
 	}
-
-
-
-
-
-	//{//R_ATTACK
-	//	actions.emplace_back(new Animation(texture));
-	//	actions[R_ATTACK]->SetPart(16, 19);
-	//	actions[R_ATTACK]->SetEndEvent(bind(&Eri::SetIdle, this));
-	//}
-
-	//{//L_ATTACK
-	//	actions.emplace_back(new Animation(texture));
-	//	actions[L_ATTACK]->SetPart(20, 23);
-	//	actions[L_ATTACK]->SetEndEvent(bind(&Eri::SetIdle, this));
-	//}
 }
 
 void Eri::SetIdle()
@@ -312,9 +323,6 @@ void Eri::SetAction(State value)
 	if (state != value)
 	{
 		state = value;
-		//curAction = actions[value];
-		//curAction->Play();
-
 		upperBody_curAction = upperBody_actions[value];
 		lowerBody_curAction = lowerBody_actions[value];
 		upperBody_curAction->Play();
