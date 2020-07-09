@@ -3,7 +3,7 @@
 class Eri
 {
 public:
-	enum State
+	enum UpperState
 	{
 		R_IDLE,
 		L_IDLE,
@@ -19,11 +19,25 @@ public:
 
 		R_STAND_ATTACK,
 		L_STAND_ATTACK,
-		R_WALK_ATTACK,
-		L_WALK_ATTACK,
+		//R_WALK_ATTACK,
+		//L_WALK_ATTACK,
 		//R_STAND_JUMP_ATTACK,
 		//L_STAND_JUMP_ATTACK
+	};
 
+	enum LowerState
+	{
+		R_IDLE,
+		L_IDLE,
+
+		R_WALK,
+		L_WALK,
+
+		R_STAND_JUMP,
+		L_STAND_JUMP,
+
+		R_WALK_JUMP,
+		L_WALK_JUMP,
 	};
 
 	Eri();
@@ -35,7 +49,8 @@ public:
 	void CheckStand();
 	void Move();
 	void Jump();
-	void SetIdle();
+	void SetUpperIdle();
+	void SetLowerIdle();
 
 	void CreateActions();
 	void SetUpperAction(State value);
@@ -50,7 +65,10 @@ private:
 
 	Texture* upperBody_texture;
 	Texture* lowerBody_texture;
-	State state;
+
+	State upperState;
+	State lowerState;
+
 	Rect* upperBody_rect;
 	Rect* lowerBody_rect;
 	Rect* colliderRect;
