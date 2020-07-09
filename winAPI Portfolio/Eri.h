@@ -19,9 +19,10 @@ public:
 
 		R_STAND_ATTACK,
 		L_STAND_ATTACK,
-
 		R_WALK_ATTACK,
-		L_WALK_ATTACK
+		L_WALK_ATTACK,
+		//R_STAND_JUMP_ATTACK,
+		//L_STAND_JUMP_ATTACK
 
 	};
 
@@ -35,9 +36,10 @@ public:
 	void Move();
 	void Jump();
 	void SetIdle();
-	void SetAttackIdle();
+
 	void CreateActions();
-	void SetAction(State value);
+	void SetUpperAction(State value);
+	void SetLowerAction(State value);
 	void GroundPixelCollision();
 
 	void Fire(string curWeapon);
