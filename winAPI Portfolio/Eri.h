@@ -5,39 +5,32 @@ class Eri
 public:
 	enum UpperState
 	{
-		R_IDLE,
-		L_IDLE,
+		U_R_IDLE,
+		U_L_IDLE,
 
-		R_WALK,
-		L_WALK,
+		U_R_WALK,
+		U_L_WALK,
 
-		R_STAND_JUMP,
-		L_STAND_JUMP,
 
-		R_WALK_JUMP,
-		L_WALK_JUMP,
+		U_R_STAND_ATTACK, // 정면을 쏘는 모션일 경우, IDLE일때나 WALK일떄나 JUMP일때나 다 똑같긴한데 //엔드이벤트가 다 다르기 때문에 각각 상태추가
+		U_L_STAND_ATTACK,
 
-		R_STAND_ATTACK,
-		L_STAND_ATTACK,
-		//R_WALK_ATTACK,
-		//L_WALK_ATTACK,
-		//R_STAND_JUMP_ATTACK,
-		//L_STAND_JUMP_ATTACK
+		// 위로 공격, 점프 후 아래로 공격 , 엎드려서 총쏘기(아랫방향키 후 공격), 폭탄던지기, 
 	};
 
 	enum LowerState
 	{
-		R_IDLE,
-		L_IDLE,
+		L_R_IDLE,
+		L_L_IDLE,
 
-		R_WALK,
-		L_WALK,
+		L_R_WALK,
+		L_L_WALK,
 
-		R_STAND_JUMP,
-		L_STAND_JUMP,
+		L_R_STAND_JUMP,
+		L_L_STAND_JUMP,
 
-		R_WALK_JUMP,
-		L_WALK_JUMP,
+		L_R_WALK_JUMP,
+		L_L_WALK_JUMP,
 	};
 
 	Eri();
@@ -53,11 +46,12 @@ public:
 	void SetLowerIdle();
 
 	void CreateActions();
-	void SetUpperAction(State value);
-	void SetLowerAction(State value);
+	void SetUpperAction(UpperState value);
+	void SetLowerAction(LowerState value);
 	void GroundPixelCollision();
 
-	void Fire(string curWeapon);
+	void Fire(string curWeapon, double delay);
+	void FireUpdate(double delay);
 	void ChangeWeapon(string weapon) { curWeapon = weapon; }; 
 	string GetCurWeapon() { return curWeapon; }
 
@@ -66,8 +60,8 @@ private:
 	Texture* upperBody_texture;
 	Texture* lowerBody_texture;
 
-	State upperState;
-	State lowerState;
+	UpperState upperState;
+	LowerState lowerState;
 
 	Rect* upperBody_rect;
 	Rect* lowerBody_rect;
@@ -97,6 +91,11 @@ private:
 	bool isLeftButton;
 	bool isStand;
 
+	bool isFire;
+	bool isFireUpdate;
+	double fireStandardTime;
+
+	double standardTime;
 	string curWeapon;
 	vector<Bullet*> tmp_bulletPool;
 	

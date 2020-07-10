@@ -1,8 +1,10 @@
 #include "Framework.h"
 
 Eri::Eri()
-	: upperState(R_IDLE), lowerState(L_IDLE),speed(100), isRight(true), isGround(true), gravity(980),
-	jumpPower(0), isStand(true), isRightButton(false), isLeftButton(false), isAttack(false), curWeapon("DefaultGunBullet")
+	: upperState(U_R_IDLE), lowerState(L_L_IDLE), speed(100), isRight(true), isGround(true), gravity(980), standTime(0),
+	jumpPower(0), isStand(true), isRightButton(false), isLeftButton(false), isAttack(false), curWeapon("DefaultGunBullet"),
+	isFire(true), isFireUpdate(false)
+	 
 {
 
 	upperBody_texture = TEX->BitmapAdd(L"Textures/Eri/UpperBody_pack.bmp", 500, 1250, 4, 10);
@@ -10,6 +12,8 @@ Eri::Eri()
 
 	upperBody_rect = new Rect({ CENTER_X - 150, CENTER_Y + 40 }, upperBody_texture->Size());
 	lowerBody_rect = new Rect({ CENTER_X - 150, CENTER_Y + 50 }, lowerBody_texture->Size());
+
+
 
 	CreateActions();
 
@@ -60,27 +64,39 @@ void Eri::Move()
 	GroundPixelCollision();
 	CheckStand();
 
+
+	if (KEYDOWN(0x41))
+	{
+		standardTime = CURTIME + 0.5f;
+		isAttack = true;
+	}
+
+
+
 	if (isStand && isGround)
 	{
 		if (isRight)
 		{
-			SetUpperAction(R_IDLE);
-			SetLowerAction(R_IDLE); // 하체
-			if (KEYDOWN(0x41)) // 공격키 누르면
+			if (!isAttack)
 			{
-				SetUpperAction(R_STAND_ATTACK);
+				SetLowerAction(L_R_IDLE);
+			}
+			else
+			{
 				Fire(curWeapon);
+				SetUpperAction(U_R_STAND_ATTACK);
 			}
 		}
 
 		else
 		{
-			SetUpperAction(L_IDLE);
-			SetLowerAction(L_IDLE); // 하체
-			if (KEYDOWN(0x41)) // 공격키 누르면
+			if (!isAttack)
 			{
-				SetUpperAction(L_STAND_ATTACK);
-				Fire(curWeapon);
+				SetLowerAction(L_L_IDLE);
+			}
+			else
+			{
+				SetUpperAction(U_L_STAND_ATTACK);
 			}
 		}
 	}
@@ -94,18 +110,18 @@ void Eri::Move()
 		upperBody_rect->center.x += speed * DELTA;
 		lowerBody_rect->center.x += speed * DELTA;
 
-		if (!isJump)
+		if (!isJump && !isAttack)
 		{
-			SetUpperAction(R_WALK);
-			SetLowerAction(R_WALK);
+			SetUpperAction(U_R_WALK);
+			SetLowerAction(L_R_WALK);
 		}
 
-		if (KEYDOWN(0x41)) // 공격키 누르면
+		else if(!isJump&&isAttack)
 		{
+			SetUpperAction(U_R_STAND_ATTACK);
+			SetLowerAction(L_R_WALK);
 			Fire(curWeapon);
 		}
-
-
 	}
 
 	if (KEYPRESS(VK_LEFT))
@@ -116,28 +132,33 @@ void Eri::Move()
 		upperBody_rect->center.x -= speed * DELTA;
 		lowerBody_rect->center.x -= speed * DELTA;
 
-		if (!isJump)
+		if (!isJump && !isAttack)
 		{
-			SetUpperAction(L_WALK);
-			SetLowerAction(L_WALK);
+			SetUpperAction(U_L_WALK);
+			SetLowerAction(L_L_WALK);
 		}
 
-		if (KEYDOWN(0x41)) // 공격키 누르면
+		else if (!isJump && isAttack)
 		{
+			SetUpperAction(U_L_STAND_ATTACK);
+			SetLowerAction(L_L_WALK);
 			Fire(curWeapon);
 		}
 
-
 	}
 
-
 	Jump();
+
+
+	if (CURTIME >= standardTime)
+	{
+		isAttack = false;
+	}
 }
 
 void Eri::Jump()
 {
-	if (KEYDOWN(0x53) && !isJump) // 애니메이션만 Set 해주고 실제 좌표이동은 다른곳에서...
-								  // 점프중 아닐때만 키입력 받을 수 있게(이중 점프되면 안되니까)
+	if (KEYDOWN(0x53) && !isJump)
 	{
 		jumpPower = 400;
 
@@ -148,11 +169,16 @@ void Eri::Jump()
 
 			if (isRight)
 			{
-				SetLowerAction(R_STAND_JUMP);
+				SetLowerAction(L_R_STAND_JUMP);
 			}
 			else
 			{
-				SetLowerAction(L_STAND_JUMP);
+				SetLowerAction(L_L_STAND_JUMP);
+				if (KEYDOWN(0x41)) // 공격키 누르면
+				{
+					SetUpperAction(U_L_STAND_ATTACK);
+					Fire(curWeapon);
+				}
 			}
 		}
 
@@ -160,32 +186,47 @@ void Eri::Jump()
 		{
 			isJump = true;
 			isGround = false;
+
 			if (isRight)
 			{
-				SetLowerAction(R_WALK_JUMP);
+				SetLowerAction(L_R_WALK_JUMP);
 			}
 			else
 			{
-				SetLowerAction(L_WALK_JUMP);
+				SetLowerAction(L_L_WALK_JUMP);
 			}
 		}
 	}
 
+
 	if (isJump) // 점프를 하고있는 상태
 	{
+		if (KEYDOWN(0x41)) // 공격키 누르면
+		{
+			Fire(curWeapon);
+
+			if (isRight)
+			{
+				SetUpperAction(U_R_STAND_ATTACK);
+			}
+			else
+			{
+				SetUpperAction(U_L_STAND_ATTACK);
+			}
+		}
+
 		if (isGround)
 		{
 			isJump = false;
 			if (isRight)
 			{
-				SetUpperAction(R_IDLE);
-				SetLowerAction(R_IDLE);
-
+				SetUpperAction(U_R_IDLE);
+				SetLowerAction(L_R_IDLE);
 			}
 			else
 			{
-				SetUpperAction(L_IDLE);
-				SetLowerAction(L_IDLE);
+				SetUpperAction(U_L_IDLE);
+				SetLowerAction(L_L_IDLE);
 			}
 		};
 	}
@@ -215,8 +256,10 @@ void Eri::GroundPixelCollision()
 
 
 
-void Eri::Fire(string curWeapon)
+void Eri::Fire(string curWeapon, double delay)
 {
+	if (!isFire) return;
+
 	tmp_bulletPool = GM->GetBulletPool(curWeapon);
 	for (int i = 0; i < tmp_bulletPool.size(); i++)
 	{
@@ -227,6 +270,21 @@ void Eri::Fire(string curWeapon)
 			break;
 		}
 	}
+
+	fireStandardTime = CURTIME + delay;
+	isFireUpdate = true;
+}
+
+
+void Eri::FireUpdate(double delay)
+{
+	if (!isFireUpdate) return;
+
+	
+
+	
+
+	
 }
 
 
@@ -247,37 +305,36 @@ void Eri::CreateActions()
 	{
 		{//R_IDLE
 			upperBody_actions.emplace_back(new Animation(upperBody_texture));
-			upperBody_actions[R_IDLE]->SetPart(0, 3, true, true);
+			upperBody_actions[U_R_IDLE]->SetPart(0, 3, true, true);
 		}
 
 		{//L_IDLE
 			upperBody_actions.emplace_back(new Animation(upperBody_texture));
-			upperBody_actions[L_IDLE]->SetPart(0, 3, true, true);
+			upperBody_actions[U_L_IDLE]->SetPart(0, 3, true, true);
 		}
 
 		{//R_WALK
 			upperBody_actions.emplace_back(new Animation(upperBody_texture));
-			upperBody_actions[R_WALK]->SetPart(4, 15, true, true);
+			upperBody_actions[U_R_WALK]->SetPart(4, 15, true, true);
 			//upperBody_actions[R_WALK]->SetEndEvent(bind(&Eri::SetUpperIdle, this));
 		}
 
 		{//L_WALK
 			upperBody_actions.emplace_back(new Animation(upperBody_texture));
-			upperBody_actions[L_WALK]->SetPart(4, 15, true, true);
+			upperBody_actions[U_L_WALK]->SetPart(4, 15, true, true);
 			//upperBody_actions[L_WALK]->SetEndEvent(bind(&Eri::SetUpperIdle, this));
 		}
 
 		{//R_STAND_ATTACK
 			upperBody_actions.emplace_back(new Animation(upperBody_texture, 0.02));
-
-			upperBody_actions[R_STAND_ATTACK]->SetPart(28, 37);
-			//upperBody_actions[R_STAND_ATTACK]->SetEndEvent(bind(&Eri::SetIdle, this));
+			upperBody_actions[U_R_STAND_ATTACK]->SetPart(28, 37); // 요기서 에러
+			upperBody_actions[U_R_STAND_ATTACK]->SetEndEvent(bind(&Eri::SetUpperIdle, this));
 		}
 
 		{//L_STAND_ATTACK
 			upperBody_actions.emplace_back(new Animation(upperBody_texture, 0.02));
-			upperBody_actions[L_STAND_ATTACK]->SetPart(28, 37);
-			//upperBody_actions[R_STAND_ATTACK]->SetEndEvent(bind(&Eri::SetIdle, this));
+			upperBody_actions[U_L_STAND_ATTACK]->SetPart(28, 37);
+			upperBody_actions[U_L_STAND_ATTACK]->SetEndEvent(bind(&Eri::SetUpperIdle, this));
 		}
 	}
 
@@ -287,79 +344,74 @@ void Eri::CreateActions()
 	{
 		{//R_IDLE
 			lowerBody_actions.emplace_back(new Animation(lowerBody_texture));
-			lowerBody_actions[R_IDLE]->SetPart(0, 0);
+			lowerBody_actions[L_R_IDLE]->SetPart(0, 0);
 		}
 
 		{//L_IDLE
 			lowerBody_actions.emplace_back(new Animation(lowerBody_texture));
-			lowerBody_actions[L_IDLE]->SetPart(0, 0);
+			lowerBody_actions[L_L_IDLE]->SetPart(0, 0);
 		}
 
 
 		{//R_WALK
 			lowerBody_actions.emplace_back(new Animation(lowerBody_texture, 0.05));
-			lowerBody_actions[R_WALK]->SetPart(5, 16, true);
+			lowerBody_actions[L_R_WALK]->SetPart(5, 16, true);
 		}
 
 		{//L_WALK
 			lowerBody_actions.emplace_back(new Animation(lowerBody_texture, 0.05));
-			lowerBody_actions[L_WALK]->SetPart(5, 16, true);
+			lowerBody_actions[L_L_WALK]->SetPart(5, 16, true);
 		}
 
 
 		{//R_STAND_JUMP
 			lowerBody_actions.emplace_back(new Animation(lowerBody_texture, 0.05));
-			lowerBody_actions[R_STAND_JUMP]->SetPart(17, 22, false, true);
+			lowerBody_actions[L_R_STAND_JUMP]->SetPart(17, 22, false, true);
 		}
 
 		{//L_STAND_JUMP
 			lowerBody_actions.emplace_back(new Animation(lowerBody_texture, 0.05));
-			lowerBody_actions[L_STAND_JUMP]->SetPart(17, 22, false, true);
+			lowerBody_actions[L_L_STAND_JUMP]->SetPart(17, 22, false, true);
 		}
 
 
 		{//R_WALK_JUMP
 			lowerBody_actions.emplace_back(new Animation(lowerBody_texture));
-			lowerBody_actions[R_WALK_JUMP]->SetPart(23, 28);
+			lowerBody_actions[L_R_WALK_JUMP]->SetPart(23, 28);
 		}
 
 		{//L_WALK_JUMP
 			lowerBody_actions.emplace_back(new Animation(lowerBody_texture));
-			lowerBody_actions[L_WALK_JUMP]->SetPart(23, 28);
+			lowerBody_actions[L_L_WALK_JUMP]->SetPart(23, 28);
 		}
 	}
 }
 
-void Eri::SetUpperAction(State value)
+void Eri::SetUpperAction(UpperState value)
 {
-	//int a = (int)value;
+	int a = (int)value;
 
-	//if (a >= 8 && a <= 9)
-	//{
-	//	state = value;
-	//	upperBody_curAction = upperBody_actions[value];
-	//	upperBody_curAction->Play();
-	//}
-
-	//else
-	//{
-	//	if (state != value)
-	//	{
-	//		state = value;
-	//		upperBody_curAction = upperBody_actions[value];
-	//		upperBody_curAction->Play();
-	//	}
-	//}
-
-	if (upperState != value)
+	if (a >= 4 && a <= 5)
 	{
 		upperState = value;
 		upperBody_curAction = upperBody_actions[value];
 		upperBody_curAction->Play();
 	}
+
+	else
+	{
+		if (upperState != value)
+		{
+			upperState = value;
+			upperBody_curAction = upperBody_actions[value];
+			upperBody_curAction->Play();
+		}
+	}
+
+
 }
 
-void Eri::SetLowerAction(State value)
+void Eri::SetLowerAction(LowerState value)
 {
 	if (lowerState != value)
 	{
@@ -373,9 +425,9 @@ void Eri::SetLowerAction(State value)
 void Eri::SetUpperIdle()
 {
 	if (isRight)
-		SetUpperAction(R_IDLE);
+		SetUpperAction(U_R_IDLE);
 	else
-		SetUpperAction(L_IDLE);
+		SetUpperAction(U_L_IDLE);
 	//Vector2 pos = { rect->center.x, rect->Bottom() }; // 이펙트 재생위치
 	//EFFECT->Play("Slash", pos, { 50, 50 });
 }
@@ -383,9 +435,9 @@ void Eri::SetUpperIdle()
 void Eri::SetLowerIdle()
 {
 	if (isRight)
-		SetLowerAction(R_IDLE);
+		SetLowerAction(L_R_IDLE);
 	else
-		SetLowerAction(L_IDLE);
+		SetLowerAction(L_L_IDLE);
 }
 
 

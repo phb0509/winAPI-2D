@@ -46,6 +46,7 @@ using namespace std;
 
 
 
+
 //#define LERP(s, e, t) (s*(1 - t) + e*t)
 #define LERP(s, e, t) (s + (e - s)*t)
 #define PI 3.141592
@@ -55,6 +56,7 @@ using namespace std;
 #define KEYUP(k) Keyboard::Get()->Up(k)
 #define KEYPRESS(k) Keyboard::Get()->Press(k)
 #define DELTA Timer::Get()->GetElapsedTime()
+#define CURTIME Timer::Get()->GetRunTime()
 //#define EFFECT FXManager::Get()
 //#define SOUND SoundManager::Get()
 #define SCENE SceneManager::Get()
