@@ -23,7 +23,7 @@ public:
 	void Stop() { play = false; }
 	bool GetPlay() { return play; }
 
-	POINT GetFrame() { return frames[action[curPlayNum]]; }
+	POINT GetFrame() { return frames[action[curPlayNum]]; } // curPlayNum은 각 액션의 순서인덱스. 프레임 4~7의 순서index
 	RECT GetRectFrame() { return rectFrames[curPlayNum]; }
 
 	void SetLoop(bool value) { loop = value; }

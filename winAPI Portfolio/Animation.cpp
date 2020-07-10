@@ -99,7 +99,7 @@ void Animation::SetPart(int start, int end, bool loop, bool pingpong)
 
 	for (int i = start; i <= end; i++)
 	{
-		action.emplace_back(i);
+		action.emplace_back(i);              // 4,7일경우 action 0,1,2,3 인덱스에 4,5,6,7
 	}
 
 	SetPingpong();

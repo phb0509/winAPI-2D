@@ -41,6 +41,7 @@ public:
 
 	void CheckStand();
 	void Move();
+	void Attack();
 	void Jump();
 	void SetUpperIdle();
 	void SetLowerIdle();
@@ -51,7 +52,7 @@ public:
 	void GroundPixelCollision();
 
 	void Fire(string curWeapon, double delay);
-	void FireUpdate(double delay);
+	void FireUpdate(double fireStandardTime);
 	void ChangeWeapon(string weapon) { curWeapon = weapon; }; 
 	string GetCurWeapon() { return curWeapon; }
 
