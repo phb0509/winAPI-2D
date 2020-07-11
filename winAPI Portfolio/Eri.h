@@ -1,5 +1,9 @@
 #pragma once
 
+
+
+
+
 class Eri
 {
 public:
@@ -10,7 +14,6 @@ public:
 
 		U_R_WALK,
 		U_L_WALK,
-
 
 		U_R_STAND_ATTACK, // 정면을 쏘는 모션일 경우, IDLE일때나 WALK일떄나 JUMP일때나 다 똑같긴한데 //엔드이벤트가 다 다르기 때문에 각각 상태추가
 		U_L_STAND_ATTACK,
@@ -51,10 +54,10 @@ public:
 	void SetLowerAction(LowerState value);
 	void GroundPixelCollision();
 
-	void Fire(string curWeapon, double delay);
-	void FireUpdate(double fireStandardTime);
-	void ChangeWeapon(string weapon) { curWeapon = weapon; }; 
-	string GetCurWeapon() { return curWeapon; }
+	void Fire();
+	void UpdateAttackDelay();
+	void ChangeWeapon(Weapon weapon) { curWeapon = weapon; }; 
+	string GetCurWeapon() { return curWeapon.getWeaponName(); }
 
 private:
 
@@ -97,7 +100,7 @@ private:
 	double fireStandardTime;
 
 	double standardTime;
-	string curWeapon;
+	Weapon curWeapon;
 	vector<Bullet*> tmp_bulletPool;
 	
 

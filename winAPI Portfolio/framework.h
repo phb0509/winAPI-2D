@@ -91,6 +91,7 @@ using namespace std;
 
 //Object Header
 
+#include "Weapon.h"
 #include "Bullet.h"
 #include "DefaultGunBullet.h"
 #include "Eri.h"

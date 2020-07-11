@@ -2,9 +2,8 @@
 
 Eri::Eri()
 	: upperState(U_R_IDLE), lowerState(L_L_IDLE), speed(100), isRight(true), isGround(true), gravity(980), standardTime(0),
-	jumpPower(0), isStand(true), isRightButton(false), isLeftButton(false), isAttack(false), curWeapon("DefaultGunBullet"),
-	isFire(true), isFireUpdate(false)
-	 
+	jumpPower(0), isStand(true), isRightButton(false), isLeftButton(false), isAttack(false), isFire(true), isFireUpdate(false)
+
 {
 
 	upperBody_texture = TEX->BitmapAdd(L"Textures/Eri/UpperBody_pack.bmp", 500, 1250, 4, 10);
@@ -13,7 +12,7 @@ Eri::Eri()
 	upperBody_rect = new Rect({ CENTER_X - 150, CENTER_Y + 40 }, upperBody_texture->Size());
 	lowerBody_rect = new Rect({ CENTER_X - 150, CENTER_Y + 50 }, lowerBody_texture->Size());
 
-
+	curWeapon = Weapon("DefaultGunBullet", 0.1f, 10000);
 
 	CreateActions();
 
@@ -44,7 +43,7 @@ Eri::~Eri()
 void Eri::Update()
 {
 	Move();
-	FireUpdate(fireStandardTime);
+	UpdateAttackDelay();
 	lowerBody_curAction->Update(); // 애니메이션 클레스의 업데이트 실행
 	upperBody_curAction->Update();
 
@@ -65,10 +64,9 @@ void Eri::Move()
 	GroundPixelCollision();
 	CheckStand();
 
-
 	if (isStand && isGround)
 	{
-		if (isRight) // 오른쪽 보고있는 경우
+		if (isRight) 
 		{
 			if (!isAttack)
 			{
@@ -76,13 +74,14 @@ void Eri::Move()
 				SetLowerAction(L_R_IDLE);
 			}
 
-
-			// 여기서 0.5초에 한번씩만
-			if (KEYDOWN(0x41)) // 공격키 누르면
+			if (isFire)
 			{
-				isAttack = true;
-				Fire(curWeapon, 0.2f);
-				SetUpperAction(U_R_STAND_ATTACK); // 모션 다 끝나면 isAttack = false; 해놨다.
+				if (KEYDOWN(0x41)) 
+				{
+					isAttack = true;
+					Fire();
+					SetUpperAction(U_R_STAND_ATTACK); 
+				}
 			}
 		}
 
@@ -97,7 +96,7 @@ void Eri::Move()
 			if (KEYDOWN(0x41)) // 공격키 누르면
 			{
 				isAttack = true;
-				Fire(curWeapon, 0.2f);
+				Fire();
 				SetUpperAction(U_L_STAND_ATTACK);
 			}
 		}
@@ -118,11 +117,11 @@ void Eri::Move()
 			SetLowerAction(L_R_WALK);
 		}
 
-		else if(!isJump&&isAttack)
+		else if (!isJump && isAttack)
 		{
 			SetUpperAction(U_R_STAND_ATTACK);
 			SetLowerAction(L_R_WALK);
-			Fire(curWeapon,0.5f);
+			Fire();
 		}
 	}
 
@@ -144,7 +143,7 @@ void Eri::Move()
 		{
 			SetUpperAction(U_L_STAND_ATTACK);
 			SetLowerAction(L_L_WALK);
-			Fire(curWeapon,0.5f);
+			Fire();
 		}
 
 	}
@@ -176,7 +175,7 @@ void Eri::Jump()
 				if (KEYDOWN(0x41)) // 공격키 누르면
 				{
 					SetUpperAction(U_L_STAND_ATTACK);
-					Fire(curWeapon,0.5f);
+					Fire();
 				}
 			}
 		}
@@ -202,7 +201,7 @@ void Eri::Jump()
 	{
 		if (KEYDOWN(0x41)) // 공격키 누르면
 		{
-			Fire(curWeapon,0.5f);
+			Fire();
 
 			if (isRight)
 			{
@@ -255,13 +254,11 @@ void Eri::GroundPixelCollision()
 
 
 
-void Eri::Fire(string curWeapon, double delay)
+void Eri::Fire()
 {
-	if (!isFire) return;
 	isFire = false;
-	fireStandardTime = CURTIME + delay; // delay 값에 따라서 호출횟수가 바뀌네
-
-	tmp_bulletPool = GM->GetBulletPool(curWeapon);
+	fireStandardTime = CURTIME + curWeapon.getAttackDelay();
+	tmp_bulletPool = GM->GetBulletPool(curWeapon.getWeaponName());
 	for (int i = 0; i < tmp_bulletPool.size(); i++)
 	{
 		if (tmp_bulletPool[i]->GetActive())
@@ -271,12 +268,12 @@ void Eri::Fire(string curWeapon, double delay)
 			break;
 		}
 	}
-
 	isFireUpdate = true;
 }
 
 
-void Eri::FireUpdate(double fireStandardTime)
+
+void Eri::UpdateAttackDelay()
 {
 	if (!isFireUpdate) return;
 
@@ -326,7 +323,7 @@ void Eri::CreateActions()
 
 		{//R_STAND_ATTACK
 			upperBody_actions.emplace_back(new Animation(upperBody_texture, 0.02));
-			upperBody_actions[U_R_STAND_ATTACK]->SetPart(28, 37); 
+			upperBody_actions[U_R_STAND_ATTACK]->SetPart(28, 37);
 			upperBody_actions[U_R_STAND_ATTACK]->SetEndEvent(bind(&Eri::SetUpperIdle, this));
 		}
 

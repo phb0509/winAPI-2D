@@ -120,6 +120,9 @@
     <ClInclude Include="Bullet.h">
       <Filter>GameObject\Eri\Bullet</Filter>
     </ClInclude>
+    <ClInclude Include="Weapon.h">
+      <Filter>GameObject\Eri</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="winAPI Portfolio.cpp">
@@ -184,6 +187,9 @@
     </ClCompile>
     <ClCompile Include="DefaultGunBullet.cpp">
       <Filter>GameObject\Eri\Bullet</Filter>
+    </ClCompile>
+    <ClCompile Include="Weapon.cpp">
+      <Filter>GameObject\Eri</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
