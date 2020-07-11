@@ -1,9 +1,6 @@
 #pragma once
 
 
-
-
-
 class Eri
 {
 public:

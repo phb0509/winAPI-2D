@@ -40,6 +40,9 @@
     <Filter Include="GameObject\Eri\Bullet">
       <UniqueIdentifier>{3741850e-5a32-41aa-a788-83572d78ba02}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameObject\Enemy">
+      <UniqueIdentifier>{c193f858-c5bd-426f-bcbe-161b8d480af5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">

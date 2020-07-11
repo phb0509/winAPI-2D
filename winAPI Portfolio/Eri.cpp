@@ -66,38 +66,43 @@ void Eri::Move()
 
 	if (isStand && isGround)
 	{
-		if (isRight) 
+		if (isRight)
 		{
+			SetLowerAction(L_R_IDLE);
 			if (!isAttack)
 			{
 				SetUpperAction(U_R_IDLE);
-				SetLowerAction(L_R_IDLE);
 			}
 
 			if (isFire)
 			{
-				if (KEYDOWN(0x41)) 
+				if (KEYDOWN(0x41))
 				{
 					isAttack = true;
 					Fire();
-					SetUpperAction(U_R_STAND_ATTACK); 
+					SetUpperAction(U_R_STAND_ATTACK);
 				}
 			}
 		}
 
 		else // 왼쪽 보고있는 경우
 		{
+			SetLowerAction(L_L_IDLE);
 			if (!isAttack)
 			{
 				SetUpperAction(U_L_IDLE);
-				SetLowerAction(L_L_IDLE);
 			}
 
-			if (KEYDOWN(0x41)) // 공격키 누르면
+			if (isFire)
 			{
-				isAttack = true;
-				Fire();
-				SetUpperAction(U_L_STAND_ATTACK);
+
+				if (KEYDOWN(0x41)) // 공격키 누르면
+				{
+					isAttack = true;
+					Fire();
+					SetUpperAction(U_L_STAND_ATTACK);
+				}
+
 			}
 		}
 	}
@@ -111,19 +116,27 @@ void Eri::Move()
 		upperBody_rect->center.x += speed * DELTA;
 		lowerBody_rect->center.x += speed * DELTA;
 
-		if (!isJump && !isAttack)
-		{
-			SetUpperAction(U_R_WALK);
-			SetLowerAction(L_R_WALK);
-		}
 
-		else if (!isJump && isAttack)
+		if (!isJump)
 		{
-			SetUpperAction(U_R_STAND_ATTACK);
 			SetLowerAction(L_R_WALK);
-			Fire();
+			if (!isAttack)
+			{
+				SetUpperAction(U_R_WALK);
+			}
+
+			if (isFire)
+			{
+				if (KEYDOWN(0x41))
+				{
+					isAttack = true;
+					Fire();
+					SetUpperAction(U_R_STAND_ATTACK);
+				}
+			}
 		}
 	}
+
 
 	if (KEYPRESS(VK_LEFT))
 	{
@@ -133,23 +146,26 @@ void Eri::Move()
 		upperBody_rect->center.x -= speed * DELTA;
 		lowerBody_rect->center.x -= speed * DELTA;
 
-		if (!isJump && !isAttack)
-		{
-			SetUpperAction(U_L_WALK);
-			SetLowerAction(L_L_WALK);
-		}
 
-		else if (!isJump && isAttack)
+		if (!isJump)
 		{
-			SetUpperAction(U_L_STAND_ATTACK);
 			SetLowerAction(L_L_WALK);
-			Fire();
-		}
+			if(!isAttack)
+			{
+				SetUpperAction(U_L_WALK);
+			}
 
+			if (isFire)
+			{
+				if (KEYDOWN(0x41))
+				{
+					isAttack = true;
+					Fire();
+					SetUpperAction(U_L_STAND_ATTACK);
+				}
+			}
+		}
 	}
-
-
-	// 
 
 	Jump();
 }
@@ -172,11 +188,6 @@ void Eri::Jump()
 			else
 			{
 				SetLowerAction(L_L_STAND_JUMP);
-				if (KEYDOWN(0x41)) // 공격키 누르면
-				{
-					SetUpperAction(U_L_STAND_ATTACK);
-					Fire();
-				}
 			}
 		}
 
@@ -199,19 +210,24 @@ void Eri::Jump()
 
 	if (isJump) // 점프를 하고있는 상태
 	{
-		if (KEYDOWN(0x41)) // 공격키 누르면
+		if (isFire)
 		{
-			Fire();
+			if (KEYDOWN(0x41)) // 공격키 누르면
+			{
+				isAttack = true;
+				Fire();
 
-			if (isRight)
-			{
-				SetUpperAction(U_R_STAND_ATTACK);
-			}
-			else
-			{
-				SetUpperAction(U_L_STAND_ATTACK);
+				if (isRight)
+				{
+					SetUpperAction(U_R_STAND_ATTACK);
+				}
+				else
+				{
+					SetUpperAction(U_L_STAND_ATTACK);
+				}
 			}
 		}
+	
 
 		if (isGround)
 		{
@@ -259,6 +275,7 @@ void Eri::Fire()
 	isFire = false;
 	fireStandardTime = CURTIME + curWeapon.getAttackDelay();
 	tmp_bulletPool = GM->GetBulletPool(curWeapon.getWeaponName());
+
 	for (int i = 0; i < tmp_bulletPool.size(); i++)
 	{
 		if (tmp_bulletPool[i]->GetActive())
