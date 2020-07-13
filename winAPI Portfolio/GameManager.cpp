@@ -36,14 +36,6 @@ void GameManager::Initialize_Bullet()
 }
 
 
-
-
-
-
-
-
-
-
 void GameManager::Setting_FirstScene()
 {
 	

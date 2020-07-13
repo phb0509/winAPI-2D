@@ -1,7 +1,7 @@
 #pragma once
 
 
-class Eri
+class Eri : public Player
 {
 public:
 	enum UpperState
@@ -41,7 +41,6 @@ public:
 
 	void CheckStand();
 	void Move();
-	void Attack();
 	void Jump();
 	void SetUpperIdle();
 	void SetLowerIdle();
@@ -66,7 +65,7 @@ private:
 
 	Rect* upperBody_rect;
 	Rect* lowerBody_rect;
-	Rect* colliderRect;
+	Rect* collider_rect;
 
 	vector<Animation*> upperBody_actions;
 	vector<Animation*> lowerBody_actions;
@@ -76,8 +75,6 @@ private:
 
 	COLORREF color;
 	COLORREF colision_color;
-	HDC collisionBackGround_DC;
-
 
 	double speed;
 	double gravity;

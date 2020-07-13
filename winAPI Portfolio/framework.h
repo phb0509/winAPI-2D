@@ -90,7 +90,9 @@ using namespace std;
 
 
 //Object Header
-
+#include "Player.h"
+#include "Enemy.h"
+#include "Soldier.h"
 #include "Weapon.h"
 #include "Bullet.h"
 #include "DefaultGunBullet.h"

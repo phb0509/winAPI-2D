@@ -146,6 +146,7 @@
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="Circle.h" />
     <ClInclude Include="DefaultGunBullet.h" />
+    <ClInclude Include="Enemy.h" />
     <ClInclude Include="Eri.h" />
     <ClInclude Include="NormalStageScene.h" />
     <ClInclude Include="Framework.h" />
@@ -154,12 +155,14 @@
     <ClInclude Include="Line.h" />
     <ClInclude Include="Math.h" />
     <ClInclude Include="Object.h" />
+    <ClInclude Include="Player.h" />
     <ClInclude Include="Point.h" />
     <ClInclude Include="Program.h" />
     <ClInclude Include="Rect.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneManager.h" />
+    <ClInclude Include="Soldier.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="TextureManager.h" />
@@ -174,6 +177,7 @@
     <ClCompile Include="Bitmap.cpp" />
     <ClCompile Include="Circle.cpp" />
     <ClCompile Include="DefaultGunBullet.cpp" />
+    <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Eri.cpp" />
     <ClCompile Include="NormalStageScene.cpp" />
     <ClCompile Include="Framework.cpp">
@@ -184,9 +188,11 @@
     <ClCompile Include="Line.cpp" />
     <ClCompile Include="Math.cpp" />
     <ClCompile Include="Object.cpp" />
+    <ClCompile Include="Player.cpp" />
     <ClCompile Include="Program.cpp" />
     <ClCompile Include="Rect.cpp" />
     <ClCompile Include="SceneManager.cpp" />
+    <ClCompile Include="Soldier.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="TextureManager.cpp" />
     <ClCompile Include="TextureRect.cpp" />

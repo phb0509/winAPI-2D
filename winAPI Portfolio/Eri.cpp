@@ -22,8 +22,6 @@ Eri::Eri()
 	upperBody_curAction->Play();
 	lowerBody_curAction->Play();
 
-
-	//collisionBackGround_DC = GM->GetNormalBackGround().collision_texture->GetMemDC();       // 여기가 문제.
 	//Texture* expTex = TEX->PlusmapAdd(L"Textures/Effects/Explosion.png", 4, 4);
 	//effect = new FX(expTex);
 }
@@ -85,7 +83,7 @@ void Eri::Move()
 			}
 		}
 
-		else // 왼쪽 보고있는 경우
+		else 
 		{
 			SetLowerAction(L_L_IDLE);
 			if (!isAttack)
@@ -95,8 +93,7 @@ void Eri::Move()
 
 			if (isFire)
 			{
-
-				if (KEYDOWN(0x41)) // 공격키 누르면
+				if (KEYDOWN(0x41)) 
 				{
 					isAttack = true;
 					Fire();
@@ -437,11 +434,6 @@ void Eri::SetLowerAction(LowerState value)
 
 void Eri::SetUpperIdle()
 {
-	//if (isRight)
-	//	SetUpperAction(U_R_IDLE);
-	//else
-	//	SetUpperAction(U_L_IDLE);
-
 	isAttack = false;
 	//Vector2 pos = { rect->center.x, rect->Bottom() }; // 이펙트 재생위치
 	//EFFECT->Play("Slash", pos, { 50, 50 });

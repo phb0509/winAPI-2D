@@ -34,14 +34,20 @@
     <Filter Include="Framework\Object">
       <UniqueIdentifier>{48ef473f-f630-4d5f-8a72-ec6363b9f9c1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="GameObject\Eri">
+    <Filter Include="GameObject\Player">
+      <UniqueIdentifier>{b9ad1886-9a71-4328-9bf5-bed82a8575b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Player\Eri">
       <UniqueIdentifier>{ff85f9e5-7334-4b7d-b1e0-16706e0c17d8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="GameObject\Eri\Bullet">
+    <Filter Include="GameObject\Player\Eri\Bullet">
       <UniqueIdentifier>{3741850e-5a32-41aa-a788-83572d78ba02}</UniqueIdentifier>
     </Filter>
     <Filter Include="GameObject\Enemy">
       <UniqueIdentifier>{c193f858-c5bd-426f-bcbe-161b8d480af5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Enemy\Soldier">
+      <UniqueIdentifier>{81334032-cc14-45a3-9aac-cd3b0794140a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -115,16 +121,25 @@
       <Filter>Scene</Filter>
     </ClInclude>
     <ClInclude Include="Eri.h">
-      <Filter>GameObject\Eri</Filter>
+      <Filter>GameObject\Player\Eri</Filter>
     </ClInclude>
     <ClInclude Include="DefaultGunBullet.h">
-      <Filter>GameObject\Eri\Bullet</Filter>
+      <Filter>GameObject\Player\Eri\Bullet</Filter>
     </ClInclude>
     <ClInclude Include="Bullet.h">
-      <Filter>GameObject\Eri\Bullet</Filter>
+      <Filter>GameObject\Player\Eri\Bullet</Filter>
     </ClInclude>
     <ClInclude Include="Weapon.h">
-      <Filter>GameObject\Eri</Filter>
+      <Filter>GameObject\Player\Eri</Filter>
+    </ClInclude>
+    <ClInclude Include="Soldier.h">
+      <Filter>GameObject\Enemy\Soldier</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy.h">
+      <Filter>GameObject\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>GameObject\Player</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -186,13 +201,22 @@
       <Filter>Scene</Filter>
     </ClCompile>
     <ClCompile Include="Eri.cpp">
-      <Filter>GameObject\Eri</Filter>
+      <Filter>GameObject\Player\Eri</Filter>
     </ClCompile>
     <ClCompile Include="DefaultGunBullet.cpp">
-      <Filter>GameObject\Eri\Bullet</Filter>
+      <Filter>GameObject\Player\Eri\Bullet</Filter>
     </ClCompile>
     <ClCompile Include="Weapon.cpp">
-      <Filter>GameObject\Eri</Filter>
+      <Filter>GameObject\Player\Eri</Filter>
+    </ClCompile>
+    <ClCompile Include="Soldier.cpp">
+      <Filter>GameObject\Enemy\Soldier</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy.cpp">
+      <Filter>GameObject\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>GameObject\Player</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
