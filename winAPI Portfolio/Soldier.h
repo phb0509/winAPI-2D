@@ -9,7 +9,9 @@ class Soldier : public Enemy
 		R_WALK,
 		L_WALK,
 		R_ATTACK,
-		L_ATTACK
+		L_ATTACK,
+		R_DIE,
+		L_DIE
 	};
 
 
